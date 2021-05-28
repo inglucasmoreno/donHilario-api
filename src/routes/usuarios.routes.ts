@@ -6,8 +6,17 @@ import { UsuariosController } from '../controllers/usuarios.controllers'
 
 const router = Router();
 
+// Usuario por ID
+// GET - http://localhost:3000/api/usuarios/:id 
 router.get('/:id', validaciones.jwt, UsuariosController.getUsuario);
+
+// Listar usuarios
+// GET - http://localhost:3000/api/usuarios
+// Parametros: columna | direccion | desde | limit | parametro | activo
 router.get('/', validaciones.jwt, UsuariosController.listarUsuarios);
+
+// Nuevo usuario
+// POST - http://localhost:3000/api/usuarios 
 router.post('/', 
             [    
                 validaciones.jwt,
@@ -18,6 +27,9 @@ router.post('/',
                 check('email', 'El Email es obligatorio').not().isEmpty(),
                 validaciones.campos
             ], UsuariosController.nuevoUsuario);
+
+// Actualizar usuario
+// PUT - http://localhost:3000/api/usuarios/:id 
 router.put('/:id', validaciones.jwt, UsuariosController.actualizarUsuario);
 
 export default router;

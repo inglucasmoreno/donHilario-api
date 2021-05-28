@@ -1,10 +1,10 @@
-import e, {json, Request, Response} from 'express';
+import {Request, Response} from 'express';
 import chalk from 'chalk';
 import bcryptjs from 'bcryptjs';
 
 import { respuesta } from '../helpers/response';
 import { jsonwebtoken } from '../helpers/jwt';
-import UsuarioModel, { Usuario } from '../models/usuarios.model';
+import UsuarioModel, { I_Usuario } from '../models/usuarios.model';
 
 // Clase: Usuarios
 class Usuarios {
@@ -13,7 +13,7 @@ class Usuarios {
     public async getUsuario(req: Request, res: Response) { 
         try{
             const id: string = req.params.id;
-            const usuario: Usuario = await UsuarioModel.findById(id, 'usuario nombre apellido role email activo');
+            const usuario: I_Usuario = await UsuarioModel.findById(id, 'usuario nombre apellido role email activo');
             if(!usuario) return respuesta.error(res, 400, 'El usuario no existe');
             respuesta.success(res, { usuario });
         }catch(err){
@@ -77,15 +77,15 @@ class Usuarios {
             const {usuario, password, email} = req.body;
             
             // Verificacion: Usuario repetido?
-            const existeUsuario: Usuario = await UsuarioModel.findOne({ usuario });
+            const existeUsuario: I_Usuario = await UsuarioModel.findOne({ usuario });
             if(existeUsuario) return respuesta.error(res, 400, 'El usuario ya existe');
                 
             // Verificacion: Email repetido?
-            const existeEmail: Usuario = await UsuarioModel.findOne({ email });
+            const existeEmail: I_Usuario = await UsuarioModel.findOne({ email });
             if(existeEmail) return respuesta.error(res, 400, 'Ese correo ya esta registrado');
     
             // Se crea la instancia de usuario
-            const usuarioObj: Usuario = new UsuarioModel(req.body);
+            const usuarioObj: I_Usuario = new UsuarioModel(req.body);
     
             // Se encript la contraseña
             const salt = bcryptjs.genSaltSync();
@@ -113,18 +113,18 @@ class Usuarios {
             const uid = req.params.id;
     
             // Verificacion: EL usuario existe?
-            const usuarioDB: Usuario = await UsuarioModel.findById(uid);
+            const usuarioDB: I_Usuario = await UsuarioModel.findById(uid);
             if(!usuarioDB) return respuesta.error(res, 400, 'El usuario no existe');
     
             // Verificacion: El Usuario esta registrado?
             if(usuario !== usuarioDB.usuario){
-                const usuarioExiste: Usuario = await UsuarioModel.findOne({ usuario });
+                const usuarioExiste: I_Usuario = await UsuarioModel.findOne({ usuario });
                 if(usuarioExiste) return respuesta.error(res, 400, 'El usuario ya esta registrado');   
             } 
     
             // Verificacion: El Correo ya esta registrado?
             if(email !==  usuarioDB.email){
-                const emailExiste: Usuario = await UsuarioModel.findOne({email});
+                const emailExiste: I_Usuario = await UsuarioModel.findOne({email});
                 if(emailExiste) return respuesta.error(res, 400, 'Ese email ya esta registrado');
             }
     
@@ -135,7 +135,7 @@ class Usuarios {
             }
     
             // Se actualiza el usuario
-            const usuarioRes: Usuario = await UsuarioModel.findByIdAndUpdate(uid, req.body, {new: true});
+            const usuarioRes: I_Usuario = await UsuarioModel.findByIdAndUpdate(uid, req.body, {new: true});
             respuesta.success(res, { usuario: usuarioRes });
     
         }catch(err){

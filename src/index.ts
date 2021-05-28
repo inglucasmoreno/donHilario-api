@@ -14,6 +14,7 @@ import { db } from './database/config';
 // Imports - Rutas
 import UsuariosRoutes from './routes/usuarios.routes';
 import AuthRoutes from './routes/auth.routes';
+import UnidadMedidaRoutes from './routes/unidad_medida.routes';
 
 // [Express]
 const app = express();
@@ -28,10 +29,11 @@ db.connection();
 // [Rutas]
 app.use('/api/usuarios', UsuariosRoutes);
 app.use('/api/auth', AuthRoutes);
+app.use('/api/unidad_medida', UnidadMedidaRoutes)
 
 // [Necesario para no perder las rutas en produccion]
 app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'src/public/index.html'))
+    res.sendFile(path.resolve(__dirname, 'public/index.html'))
 })
 
 // Ejecución de servidor

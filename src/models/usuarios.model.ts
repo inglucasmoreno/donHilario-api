@@ -1,6 +1,7 @@
 import mongoose, { Schema, model } from 'mongoose';
 
-export interface Usuario extends mongoose.Document {
+// Interfaz - Usuario
+export interface I_Usuario extends mongoose.Document {
     usuario: String,
     apellido: String,
     nombre: String,
@@ -10,6 +11,7 @@ export interface Usuario extends mongoose.Document {
     activo: Boolean
 }
 
+// Modelo - Usuario
 const usuarioSchema = new Schema({
     
     usuario: {  // Usuario del sistema
