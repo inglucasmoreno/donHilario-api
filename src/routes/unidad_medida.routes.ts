@@ -15,7 +15,7 @@ router.get('/:id', validaciones.jwt, UnidadMedidaController.getUnidad);
 // Parametros: columna | direccion | desde | limit | descripcion | activo
 router.get('/', validaciones.jwt, UnidadMedidaController.listarUnidades);
 
-// Nueva unidad de medida
+//Nueva unidad de medida 
 // POST - http://localhost:3000/api/unidad_medida
 router.post('/', 
             [    
