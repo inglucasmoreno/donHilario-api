@@ -22,6 +22,12 @@ const productoSchema = new Schema({
         require: 'El codigo es un valor obligatorio'
     },
 
+    tipo: {
+        type: String,
+        trim: true,
+        required: 'El tipo de producto es obligatorio'
+    },
+
     descripcion: {
         type: String,
         trim: true,
