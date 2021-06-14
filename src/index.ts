@@ -17,6 +17,7 @@ import AuthRoutes from './routes/auth.routes';
 import UnidadMedidaRoutes from './routes/unidad_medida.routes';
 import ProductoRoutes from './routes/productos.routes';
 import ProveedoresRoutes from './routes/proveedores.routes';
+import IngresoRoutes from './routes/ingreso.routes';
 
 // [Express]
 const app = express();
@@ -34,6 +35,7 @@ app.use('/api/auth', AuthRoutes);
 app.use('/api/unidad_medida', UnidadMedidaRoutes);
 app.use('/api/productos', ProductoRoutes);
 app.use('/api/proveedores', ProveedoresRoutes);
+app.use('/api/ingresos', IngresoRoutes);
 
 // [Necesario para no perder las rutas en produccion]
 app.get('*', (req, res) => {
