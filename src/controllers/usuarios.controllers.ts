@@ -30,10 +30,6 @@ class Usuarios {
         
             // Ordenar
             let ordenar = [columna || 'apellido', direccion || 1];
-    
-            // Paginacion
-            const pagDesde = Number(desde) || 0;
-            const pagLimit = Number(limit) || 0;
             
             // Busqueda
             let busqueda = activo ? { activo }  : {};
@@ -55,9 +51,7 @@ class Usuarios {
             const [usuarios, total] = await Promise.all([
                 UsuarioModel.find(busqueda, 'usuario apellido nombre role email activo createdAt')
                        .or(filtroOR)
-                       .sort([ordenar])
-                       .skip(pagDesde)
-                       .limit(pagLimit),
+                       .sort([ordenar]),
                 UsuarioModel.find(busqueda)
                        .or(filtroOR)
                        .countDocuments()
