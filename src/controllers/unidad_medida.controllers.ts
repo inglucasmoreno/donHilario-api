@@ -54,37 +54,18 @@ class UnidadMedida {
     public async listarUnidades(req: Request, res: Response) {
         try{
 
-            const { activo, descripcion } = req.query;
+            const { activo } = req.query;
 
-            // 1) - Ordenar
+            // Ordenar
             let ordenar = [ req.query.columna || 'descripcion', req.query.direccion || 1 ];
     
-            // 2) - Paginación
-            const desde = Number(req.query.desde) || 0;
-            const limit = Number(req.query.limit) || 0;
-    
-            // 3) - Filtrado            
+            // Filtrado            
             let busqueda = activo ? { activo } : {};
-            let filtroOR: any = [];            
-            
-            // Filtrado activo
-            const filtroDescripcion: any = descripcion || '';
-
-            // Filtrado OR
-            if(filtroDescripcion){
-                const iDescripcion = new RegExp(filtroDescripcion, 'i'); // Expresion regular para busqueda insensible
-                filtroOR.push({descripcion: iDescripcion});
-            }else{
-                filtroOR.push({});
-            }
             
             // Respuesta
             const [ unidades, total ] = await Promise.all([
                 UnidadModel.find(busqueda)
-                           .or(filtroOR)
-                           .sort([ordenar])
-                           .skip(desde)
-                           .limit(limit),
+                           .sort([ordenar]),
                 UnidadModel.find(busqueda).countDocuments()
             ]);
     

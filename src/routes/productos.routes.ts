@@ -11,7 +11,7 @@ router.get('/:id', validaciones.jwt, ProductosController.getProducto);
 
 // Listar productos
 // GET - http://localhost:3000/api/productos
-// Parametros: columna | direccion | desde | limit | codigo | descripcion | activo
+// Parametros: columna | direccion
 router.get('/', validaciones.jwt, ProductosController.listarProductos);
 
 //Nuevo producto

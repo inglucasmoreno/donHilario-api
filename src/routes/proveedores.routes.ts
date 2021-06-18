@@ -12,7 +12,7 @@ router.get('/:id', validaciones.jwt, ProveedoresController.getProveedor);
 
 // Listar proveedores
 // GET - http://localhost:3000/api/proveedores
-// Parametros: columna | direccion | desde | limit | descripcion | activo
+// Parametros: columna | direccion | descripcion | activo
 router.get('/', validaciones.jwt, ProveedoresController.listarProveedores);
 
 // Nuevo proveedor

@@ -12,7 +12,7 @@ router.get('/:id', validaciones.jwt, UsuariosController.getUsuario);
 
 // Listar usuarios
 // GET - http://localhost:3000/api/usuarios
-// Parametros: columna | direccion | parametro | activo
+// Parametros: columna | direccion
 router.get('/', validaciones.jwt, UsuariosController.listarUsuarios);
 
 // Nuevo usuario

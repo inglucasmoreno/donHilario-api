@@ -24,10 +24,6 @@ class Proveedores {
             // Ordenar
             let ordenar = [ req.query.columna || 'razon_social', req.query.direccion || 1 ];
     
-            // Paginación
-            const desde = Number(req.query.desde) || 0;
-            const limit = Number(req.query.limit) || 0;
-    
             // Filtrado
             const busqueda: any = {};
             let filtroOR = [];
@@ -49,9 +45,7 @@ class Proveedores {
             const [ proveedores, total ] = await Promise.all([
                 ProveedorModel.find(busqueda)
                             .or(filtroOR)
-                            .sort([ordenar])
-                            .skip(desde)
-                            .limit(limit),
+                            .sort([ordenar]),
                 ProveedorModel.find(busqueda)
                             .or(filtroOR)
                             .countDocuments()

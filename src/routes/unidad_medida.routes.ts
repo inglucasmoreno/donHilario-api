@@ -12,7 +12,7 @@ router.get('/:id', validaciones.jwt, UnidadMedidaController.getUnidad);
 
 // Listar unidades de medida
 // GET - http://localhost:3000/api/unidad_medida
-// Parametros: columna | direccion | desde | limit | descripcion | activo
+// Parametros: columna | direccion | descripcion | activo
 router.get('/', validaciones.jwt, UnidadMedidaController.listarUnidades);
 
 //Nueva unidad de medida 

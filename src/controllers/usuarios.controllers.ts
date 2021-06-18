@@ -26,35 +26,16 @@ class Usuarios {
     public async listarUsuarios(req: Request, res: Response) { 
         try{
             
-            const { columna, direccion, desde, limit, parametro, activo } = req.query;
+            const { columna, direccion } = req.query;
         
             // Ordenar
             let ordenar = [columna || 'apellido', direccion || 1];
             
-            // Busqueda
-            let busqueda = activo ? { activo }  : {};
-            
-            // Filtro OR
-            let filtroOR = []; 
-            const filtroParametro: any = parametro || '';
-            
-            if(filtroParametro){
-                const parametro = new RegExp(filtroParametro, 'i'); // Expresion regular para busqueda insensible
-                filtroOR.push({nombre: parametro});
-                filtroOR.push({apellido: parametro});
-                filtroOR.push({usuario: parametro});
-            }else{
-                filtroOR.push({});
-            }
-            
             // Ejecución de consulta
             const [usuarios, total] = await Promise.all([
-                UsuarioModel.find(busqueda, 'usuario apellido nombre role email activo createdAt')
-                       .or(filtroOR)
-                       .sort([ordenar]),
-                UsuarioModel.find(busqueda)
-                       .or(filtroOR)
-                       .countDocuments()
+                UsuarioModel.find({}, 'usuario apellido nombre role email activo createdAt')
+                            .sort([ordenar]),
+                UsuarioModel.find().countDocuments()
             ]);
             
             respuesta.success(res, { usuarios, total });

@@ -32,24 +32,9 @@ class Ingreso {
             let pipeline = [];
             let pipelineTotal = [];
 
-            const { activo, columna, direccion, limit, desde, codigo } = req.query;
+            const { columna, direccion } = req.query;
 
-            // Etapa 1 - Filtrado por codigo
-            if(codigo){
-                pipeline.push({$match: { codigo: Number(codigo) }});
-                pipelineTotal.push({$match: { codigo: Number(codigo) }});
-            }
-            
-            // Etapa 2 - Filtrado por Activo/Inactivo
-            if(activo == 'true'){
-                pipeline.push({$match: { activo: true }});
-                pipelineTotal.push({$match: { activo: true }});
-            }else if(activo == 'false'){
-                pipeline.push({$match: { activo: false }});
-                pipelineTotal.push({$match: { activo: false }});
-            }
-
-            // Etapa 3 - Join (Proveedor)
+            // Join (Proveedor)
             pipeline.push(
                 { $lookup: { // Lookup - Tipos
                     from: 'proveedores',
@@ -70,27 +55,13 @@ class Ingreso {
     
             pipeline.push({ $unwind: '$proveedor' });
             pipelineTotal.push({ $unwind: '$proveedor' });        
-    
-            // Etapa 4 - Filtrado por descripcion - Filtro OR
-            // - Razon social de proveedor | CUIT de proveedor
-            if(req.query.descripcion){
-                const descripcion: any = new RegExp(String(req.query.descripcion), 'i'); // Expresion regular para busqueda insensible
-                pipeline.push({$match: { $or: [{ 'codigo' : Number(descripcion) }, { 'proveedor.razon_social' : descripcion }, {'proveedor.cuit': descripcion}] }});
-                pipelineTotal.push({$match: { $or: [{ 'codigo' : Number(descripcion) }, {'proveedor.cuit': descripcion}] }});
-            }
-    
-            // Etapa 5 - Ordenando datos
+        
+            // Ordenando datos
             const ordenar: any = {};
             if(req.query.columna){
                 ordenar[String(columna)] = Number(direccion); 
                 pipeline.push({$sort: ordenar});
             } 
-    
-            // Etapa 6 -  Paginación
-            const desdePag = desde ? Number(desde) : 0;
-            const limitPag = limit ? Number(limit) : 0;       
-            if(limitPag != 0) pipeline.push({$limit: limitPag});
-            pipeline.push({$skip: desdePag});
     
             const [ingresos, ingresosTotal] = await Promise.all([
                 IngresoModel.aggregate(pipeline),
