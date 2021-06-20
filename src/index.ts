@@ -18,6 +18,7 @@ import UnidadMedidaRoutes from './routes/unidad_medida.routes';
 import ProductoRoutes from './routes/productos.routes';
 import ProveedoresRoutes from './routes/proveedores.routes';
 import IngresoRoutes from './routes/ingreso.routes';
+import IngresoProductoRoutes from './routes/ingreso_productos.routes';
 
 // [Express]
 const app = express();
@@ -36,6 +37,7 @@ app.use('/api/unidad_medida', UnidadMedidaRoutes);
 app.use('/api/productos', ProductoRoutes);
 app.use('/api/proveedores', ProveedoresRoutes);
 app.use('/api/ingresos', IngresoRoutes);
+app.use('/api/ingreso_productos', IngresoProductoRoutes);
 
 // [Necesario para no perder las rutas en produccion]
 app.get('*', (req, res) => {

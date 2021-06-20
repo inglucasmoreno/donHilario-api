@@ -2,6 +2,7 @@ import mongoose, { Schema, model } from 'mongoose';
 
 // Interfaz - Producto
 export interface I_Producto extends mongoose.Document {
+    _id: String,
     codigo: String,
     descripcion: String,
     unidad_medida: Schema.Types.ObjectId,

@@ -5,8 +5,7 @@ export interface I_IngresoProducto extends mongoose.Document {
     ingreso: Schema.Types.ObjectId,
     producto: Schema.Types.ObjectId,
     cantidad: Number,
-    fecha_ingreso: Date,
-    usuario: String,   
+    usuario_creacion: String,   
     activo: Boolean                    
 }
 
@@ -31,9 +30,9 @@ const ingresoProductoSchema = new Schema({
         required: 'La cantidad es obligatoria'
     },
 
-    fecha_ingreso: {
-        type: Date,
-        default: Date.now()
+    usuario_creacion: {
+       type: String,
+       required: 'El usuario es obligatorio'     
     },
 
     activo: {
@@ -41,6 +40,6 @@ const ingresoProductoSchema = new Schema({
         default: true
     }
 
-}, { timestamps: true, collection: 'producto_ingreso' });
+}, { timestamps: true, collection: 'ingreso_producto' });
 
-export default model('producto_ingreso', ingresoProductoSchema)
+export default model('ingreso_producto', ingresoProductoSchema)
