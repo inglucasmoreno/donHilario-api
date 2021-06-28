@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import chalk from 'chalk';
 import { respuesta } from '../helpers/response';
 import ProveedorModel, { I_Proveedor } from '../models/proveedor.model';
+import ingresoModel from '../models/ingreso.model';
 
 class Proveedores {
 
@@ -85,7 +86,7 @@ class Proveedores {
         try{
 
             const id = req.params.id;
-            const { cuit } = req.body;
+            const { cuit, activo } = req.body;
             
             // Se verifica si el proveedor a actualizar existe
             const dbProveedor = await ProveedorModel.findById(id);
@@ -97,6 +98,13 @@ class Proveedores {
                     const cuitExiste = await ProveedorModel.findOne({ cuit });
                     if(cuitExiste) return respuesta.error(res, 400, 'El CUIT ya esta registrado');        
                 }    
+            }
+
+            // Se verifica si se va a dar de baja al proveedor
+            if(!activo){
+                // Se verifica si un ingreso activo esta utilizando el proveedor
+                const proveedorUtilizado: any = await ingresoModel.find({ proveedor: id, activo: true });
+                if(proveedorUtilizado.length > 0) return respuesta.error(res, 400, 'El proveedor esta asociado a un ingreso activo')
             }
     
             const proveedor = await ProveedorModel.findByIdAndUpdate(id, req.body, {new: true});

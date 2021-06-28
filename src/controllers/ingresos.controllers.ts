@@ -4,7 +4,9 @@ import chalk from 'chalk';
 import { respuesta } from '../helpers/response';
 
 import UsuarioModel from '../models/usuarios.model'; 
+import ProductoModel, { I_Producto } from '../models/producto.model';
 import IngresoModel, { I_Ingreso } from '../models/ingreso.model';
+import IngresoProductoModel, { I_IngresoProducto } from '../models/ingreso_productos.model';
 
 
 class Ingreso {
@@ -122,11 +124,24 @@ class Ingreso {
             const ingresoBD: I_Ingreso = await IngresoModel.findById(id);
             if(!ingresoBD) return respuesta.error(res, 400, 'El ingreso no existe');
             
-            // Actualizacion de usuario_cierre - Al cerrar el ingreso
+            // Actualizacion especial para cierre de ingreso
             if(activo === false){
+                
+                // Impacto sobre el stock de los productos
+                const productos: any = await IngresoProductoModel.find({ ingreso: id });
+                
+                productos.forEach( async (elemento: any) => {
+                    await ProductoModel.findByIdAndUpdate(elemento.producto, { $inc: { cantidad: elemento.cantidad }  }, {new: true});     
+                });
+
+                // Se agrega la fecha de cierre a la actualizacion
+                req.body.fecha_cierre = new Date();
+
+                // Se agrega el usuario de cierre a la actualizacion
                 const usuarioLogin = await UsuarioModel.findById(uid, 'apellido nombre');
                 const usuario_cierre = usuarioLogin.apellido + ' ' + usuarioLogin.nombre;
-                req.body.usuario_cierre = usuario_cierre; 
+                req.body.usuario_cierre = usuario_cierre;
+
             }
 
             // Se actualiza el ingreso    

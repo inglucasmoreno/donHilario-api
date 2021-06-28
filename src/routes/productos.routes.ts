@@ -9,6 +9,10 @@ const router = Router();
 // GET - http://localhost:3000/api/productos/:id 
 router.get('/:id', validaciones.jwt, ProductosController.getProducto);
 
+// Producto por Codigo
+// GET - http://localhost:3000/api/productos/codigo/:codigo
+router.get('/codigo/:codigo', validaciones.jwt, ProductosController.productoPorCodigo);
+
 // Listar productos
 // GET - http://localhost:3000/api/productos
 // Parametros: columna | direccion

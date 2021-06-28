@@ -1,4 +1,4 @@
-import { Request, response, Response } from 'express';
+import { Request, Response } from 'express';
 
 import chalk from 'chalk';
 import { respuesta } from '../helpers/response';
@@ -6,7 +6,7 @@ import { respuesta } from '../helpers/response';
 import ProductoModel from '../models/producto.model';
 import UsuarioModel from '../models/usuarios.model'; 
 import IngresoProductoModel, { I_IngresoProducto } from '../models/ingreso_productos.model';
-import ingreso_productosModel from '../models/ingreso_productos.model';
+import mongoose from 'mongoose';
 
 class IngresoProducto {
     
@@ -15,10 +15,10 @@ class IngresoProducto {
         try{
             
             const { id } = req.params;
-            const ingresoProducto = await IngresoProductoModel.findById(id)
-                                                              .populate('ingreso')
-                                                              .populate('producto')
-            respuesta.success(res, { producto: ingresoProducto })
+            const producto = await IngresoProductoModel.findById(id)
+                                                       .populate('ingreso')
+                                                       .populate('producto')
+            respuesta.success(res, { producto })
         
         }catch(err){
         
@@ -28,19 +28,80 @@ class IngresoProducto {
         }    
     }
 
+    // Metodo: Productos por ingreso
+    public async productosPorIngreso(req: any, res: Response) {
+        try{
+
+            const { ingreso } = req.params;
+            
+            const pipeline = [];
+
+            // Filtrado por ingreso
+            pipeline.push({ $match: { ingreso: mongoose.Types.ObjectId(ingreso) }});
+
+            // Join (Productos)     
+            pipeline.push(
+                { $lookup: { // Lookup - Productos
+                    from: 'productos',
+                    localField: 'producto',
+                    foreignField: '_id',
+                    as: 'producto'
+                }},
+            );        
+            pipeline.push({ $unwind: '$producto' });
+
+            // Join (Producto - Unidad de medida)     
+            pipeline.push(
+            { $lookup: { // Lookup - Unidad de medida
+                from: 'unidad_medida',
+                localField: 'producto.unidad_medida',
+                foreignField: '_id',
+                as: 'producto.unidad_medida'
+            }},
+            );
+            pipeline.push({ $unwind: '$producto.unidad_medida' });
+    
+            // Ordenando datos
+            const ordenar: any = {};
+            if(req.query.columna){
+                ordenar[req.query.columna] = Number(req.query.direccion);
+                pipeline.push({$sort: ordenar});
+            }
+
+            const productos = await IngresoProductoModel.aggregate(pipeline);
+
+            respuesta.success(res, { productos });              
+        }catch(err){
+            console.log(chalk.red(err));
+            respuesta.error(res, 500);    
+        }
+    }
+
     // Metodo: Nuevo Producto - Ingreso
     public async nuevoProducto(req: any, res: Response) {
         try{
             
             const uid = req.uid;
-            const {codigo, ingreso, cantidad} = req.body;
+            let {codigo, ingreso, cantidad} = req.body;
             
-            // Se obtiene el producto
-            const producto: any = await ProductoModel.findOne({ codigo });
-            if(!producto) return respuesta.error(res, 400, 'El producto no existe');
+            let producto: any;
+
+            // Se busca el producto como tipo: normal
+            producto = await ProductoModel.findOne({ codigo });
+            
+            if(!producto) {
+                
+                // Se busca el producto como tipo: balanza
+                const codigoBalanza = codigo.slice(0, 7);
+                producto = await ProductoModel.findOne({ codigo: codigoBalanza });
+                codigo = codigoBalanza;
+                
+                if(!producto) return respuesta.error(res, 400, 'El producto no existe');
+
+            }
 
             // Se verifica si el producto ya esta cargado en el ingreso
-            const productoCargado: I_IngresoProducto = await IngresoProductoModel.findOne({ codigo, ingreso });
+            const productoCargado: I_IngresoProducto = await IngresoProductoModel.findOne({ producto: producto._id, ingreso });
             if(productoCargado) return respuesta.error(res, 400, 'El producto ya esta cargado');
 
             // Se buscan los datos del usuario logueado
@@ -63,14 +124,7 @@ class IngresoProducto {
     // Metodo: Listar Producto - Ingreso
     public async listarProductos(req: Request, res: Response) {
         try{
-            // Ordenar
-            let ordenar = [ req.query.columna || 'createdAt', req.query.direccion || 1 ];
-            
-            // Se obtienen los productos
-            const productos: I_IngresoProducto[] = await IngresoProductoModel.find()
-                                                                             .populate('ingreso')
-                                                                             .populate('producto')
-                                                                             .sort([ordenar])
+            const productos: I_IngresoProducto = await IngresoProductoModel.find();
             respuesta.success(res, { productos });      
         }catch(err){
             console.log(chalk.red(err));

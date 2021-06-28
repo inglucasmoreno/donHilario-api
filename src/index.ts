@@ -19,6 +19,8 @@ import ProductoRoutes from './routes/productos.routes';
 import ProveedoresRoutes from './routes/proveedores.routes';
 import IngresoRoutes from './routes/ingreso.routes';
 import IngresoProductoRoutes from './routes/ingreso_productos.routes';
+import VentasRoutes from './routes/ventas.routes';
+import VentasProductosRoutes from './routes/ventas_productos.routes';
 
 // [Express]
 const app = express();
@@ -38,6 +40,8 @@ app.use('/api/productos', ProductoRoutes);
 app.use('/api/proveedores', ProveedoresRoutes);
 app.use('/api/ingresos', IngresoRoutes);
 app.use('/api/ingreso_productos', IngresoProductoRoutes);
+app.use('/api/ventas', VentasRoutes);
+app.use('/api/ventas_productos', VentasProductosRoutes);
 
 // [Necesario para no perder las rutas en produccion]
 app.get('*', (req, res) => {

@@ -5,16 +5,20 @@ import { IngresoProductoController } from '../controllers/ingreso_productos.cont
 
 const router = Router();
 
-// Producto - Ingreso por ID
-// GET - http://localhost:3000/api/ingreso_producto/:id 
+// Productos por ID (id de producto)
+// GET - http://localhost:3000/api/ingreso_producto/:id
 router.get('/:id', validaciones.jwt, IngresoProductoController.getProducto);
 
-// Listar Productos - Ingreso
+// Productos por ingreso 
+// GET - http://localhost:3000/api/ingreso_producto/ingreso/:ingreso 
+router.get('/ingreso/:ingreso', validaciones.jwt, IngresoProductoController.productosPorIngreso);
+
+// Listar productos
 // GET - http://localhost:3000/api/ingreso_producto
 // Parametros: columna | direccion
 router.get('/', validaciones.jwt, IngresoProductoController.listarProductos);
 
-// Nuevo Producto - Ingreso
+// Nuevo producto
 // POST - http://localhost:3000/api/ingreso_producto
 router.post('/', 
             [    
@@ -25,11 +29,11 @@ router.post('/',
                 validaciones.campos
             ], IngresoProductoController.nuevoProducto);
 
-// Actualizar Producto - Ingreso
+// Actualizar producto
 // PUT - http://localhost:3000/api/ingresos_producto/:id
 router.put('/:id', validaciones.jwt, IngresoProductoController.actualizarProducto);
 
-// Eliminar Producto - Ingreso
+// Eliminar producto
 // DELETE - http://localhost:3000/api/ingresos_producto/:id
 router.delete('/:id', validaciones.jwt, IngresoProductoController.eliminarProducto);
 

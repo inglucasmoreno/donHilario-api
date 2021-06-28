@@ -29,9 +29,43 @@ class Producto{
     public async getProducto(req: Request, res: Response) {
         try{
             const producto: I_Producto = await ProductoModel.findById(req.params.id)
-                                                .populate('unidad_medida', 'descripcion')
+                                                            .populate('unidad_medida', 'descripcion')
             if(!producto) return respuesta.error(res, 400, 'El producto no existe');
             respuesta.success(res, { producto });
+        }catch(err){
+            console.log(chalk.red(err));
+            respuesta.error(res, 500);
+        }
+    }
+
+    // Metodo: producto por Codigo
+    public async productoPorCodigo(req: Request, res: Response) {
+        try{
+            
+            const { codigo } = req.params;
+            
+            let producto: I_Producto;
+
+            // Busqueda dentro de productos normales
+            producto = await ProductoModel.findOne({ codigo })
+                                                            .populate('unidad_medida', 'descripcion')
+            if(!producto) {
+                
+                // Busqueda dentro de productos de balanza
+                const codigoBalanza = codigo.slice(0, 7);
+                
+                producto = await ProductoModel.findOne({ codigo: codigoBalanza })
+                                              .populate('unidad_medida', 'descripcion')
+                
+                // No se encontro el producto
+                if(!producto){
+                    return respuesta.error(res, 400, 'El producto no existe');
+                }
+            
+            }
+            
+            respuesta.success(res, { producto });
+        
         }catch(err){
             console.log(chalk.red(err));
             respuesta.error(res, 500);
