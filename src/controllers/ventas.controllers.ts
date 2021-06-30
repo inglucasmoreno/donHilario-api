@@ -2,8 +2,11 @@ import chalk from 'chalk';
 import { Request, Response } from 'express';
 
 import { respuesta } from '../helpers/response';
+import VentaProductos from '../models/venta_productos.model';
+import ProductoModel from '../models/producto.model';
 import VentaModel, { I_Venta } from '../models/venta.model';
 import UsuarioModel from '../models/usuarios.model';
+
 
 class Ventas {
 
@@ -47,6 +50,10 @@ class Ventas {
             const { uid } = req;
             const { precio_total } = req.body;
 
+            // Recepcion de productos
+            const productos: any[] = req.body.productos;
+            // console.log(productos);
+
             // Se genera codigo de ingreso
             const ultimaVenta: any = await VentaModel.find().sort({ createdAt: -1 });
             var codigo = ultimaVenta.length != 0 ? ultimaVenta[0].codigo + 1 : 0;
@@ -62,14 +69,34 @@ class Ventas {
                 precio_total, 
                 usuario_creacion
             };
-
-            // Se agregan los productos a la venta y se impacta sobre el stock
-            // -----------------------------------
             
             // Se crea la venta
             const ventaObj: I_Venta = new VentaModel(data);
             const venta: I_Venta = await ventaObj.save();
                     
+            // Se agregan los productos a la venta y se impacta sobre el stock
+            productos.forEach( async (elemento: any) => {
+                const data = {
+                    venta: venta._id,
+                    cantidad: elemento.cantidad,
+                    producto: elemento.producto,
+                    precio_unitario: elemento.precio_unitario,
+                    precio_total: elemento.precio_total,
+                    usuario_creacion
+                }
+                
+                // Se agrega el producto a la venta
+                const productoTemp = new VentaProductos(data);
+                await productoTemp.save();
+            
+
+                // Se impacta sobre el stock
+                const productoDB: any = await ProductoModel.findById(elemento.producto);
+                const nuevaCantidad: number = productoDB.cantidad - elemento.cantidad;  
+                await ProductoModel.findByIdAndUpdate(elemento.producto, { cantidad: nuevaCantidad });
+            
+            });
+
             respuesta.success(res, { venta });
             
         }catch(err){     
