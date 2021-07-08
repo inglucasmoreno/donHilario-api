@@ -21,6 +21,10 @@ import IngresoRoutes from './routes/ingreso.routes';
 import IngresoProductoRoutes from './routes/ingreso_productos.routes';
 import VentasRoutes from './routes/ventas.routes';
 import VentasProductosRoutes from './routes/ventas_productos.routes';
+import OtrosIngresosRoutes from './routes/otros_ingresos.routes';
+import OtrosGastosRoutes from './routes/otros_gastos.routes';
+import CajasRoutes from './routes/caja.routes';
+
 
 // [Express]
 const app = express();
@@ -42,6 +46,9 @@ app.use('/api/ingresos', IngresoRoutes);
 app.use('/api/ingreso_productos', IngresoProductoRoutes);
 app.use('/api/ventas', VentasRoutes);
 app.use('/api/ventas_productos', VentasProductosRoutes);
+app.use('/api/otros_gastos', OtrosGastosRoutes);
+app.use('/api/otros_ingresos', OtrosIngresosRoutes);
+app.use('/api/cajas', CajasRoutes);
 
 // [Necesario para no perder las rutas en produccion]
 app.get('*', (req, res) => {

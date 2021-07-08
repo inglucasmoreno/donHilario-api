@@ -19,7 +19,7 @@ router.get('/', validaciones.jwt, IngresoController.listarIngresos);
 router.post('/', 
             [    
                 validaciones.jwt,
-                check('proveedor', 'El proveedor es un campo obligatorio').not().isEmpty(),
+                check('proveedor', 'El proveedor es un campo obligatorio').not().isEmpty(),               
                 validaciones.campos
             ], IngresoController.nuevoIngreso);
 

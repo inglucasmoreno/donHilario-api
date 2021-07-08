@@ -21,6 +21,10 @@ router.post('/',
             [    
                 validaciones.jwt,
                 check('precio_total', 'El precio total es un campo obligatorio').not().isEmpty(),
+                check('total_balanza', 'El total de balanza es un campo obligatorio').not().isEmpty(),
+                check('total_mercaderia', 'El total de mercaderia es un campo obligatorio').not().isEmpty(),
+                check('forma_pago', 'La forma de pago es un campo obligatorio').not().isEmpty(),
+                check('descuento_porcentual', 'El descuento porcentual es un campo obligatorio').not().isEmpty(),
                 validaciones.campos
             ], VentasController.nuevaVenta);
 

@@ -14,7 +14,6 @@ class Ventas {
     public async getVenta(req: Request, res: Response) {
         try{
             const id = req.params.id;
-            console.log(id);
             const venta: I_Venta = await VentaModel.findById(id);
             respuesta.success(res, { venta });
         }catch(err){
@@ -27,13 +26,13 @@ class Ventas {
     public async listarVentas(req: Request, res: Response){
         try{
 
-            const { columna, direccion } = req.query;
-            
+            const { columna, direccion, activo = true } = req.query;
+
             // Ordenar
             let ordenar = [columna || 'createdAt', direccion || -1];    
             
             // Se listan las ventas
-            const ventas: I_Venta = await VentaModel.find().sort([ordenar]);
+            const ventas: I_Venta = await VentaModel.find({ activo }).sort([ordenar]);
             
             respuesta.success(res, { ventas });
 
@@ -48,11 +47,10 @@ class Ventas {
         try{
 
             const { uid } = req;
-            const { precio_total } = req.body;
+            const { precio_total, descuento_porcentual, forma_pago, total_balanza, total_mercaderia } = req.body;
 
             // Recepcion de productos
             const productos: any[] = req.body.productos;
-            // console.log(productos);
 
             // Se genera codigo de ingreso
             const ultimaVenta: any = await VentaModel.find().sort({ createdAt: -1 });
@@ -66,7 +64,11 @@ class Ventas {
             // Se genera la data para almacenar en la DB
             const data = { 
                 codigo,
-                precio_total, 
+                precio_total,
+                total_balanza,
+                total_mercaderia,
+                forma_pago,
+                descuento_porcentual,
                 usuario_creacion
             };
             

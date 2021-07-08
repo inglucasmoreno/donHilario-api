@@ -19,6 +19,26 @@ const ventaSchema = new Schema({
         trim: true,
         require: 'El precio total es un campo obligatorio'
     },
+    total_balanza: {
+        type: Number,
+        trim: true,
+        require: 'El total de balanza es un campo obligatorio'
+    },
+    total_mercaderia: {
+        type: Number,
+        trim: true,
+        require: 'El total de mercaderia es un campo obligatorio'
+    },
+    forma_pago: {
+        type: String,
+        trim: true,
+        require: 'La forma de pago es un campo obligatorio'      
+    },
+    descuento_porcentual: {
+        type: Number,
+        trim: true,
+        require: 'EL descuento porcentual es un campo obligatorio' 
+    },
     usuario_creacion: {
         type: String,
         trim: true,

@@ -86,8 +86,6 @@ class VentasProductos {
 
         const { venta } = req.params;
 
-        console.log(venta);
-
         const pipeline = []; 
         
         // Matcheo con el ID de venta
