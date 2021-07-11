@@ -47,14 +47,17 @@ class Ventas {
         try{
 
             const { uid } = req;
-            const { precio_total, descuento_porcentual, forma_pago, total_balanza, total_mercaderia } = req.body;
+            const { precio_total, 
+                    descuento_porcentual, 
+                    forma_pago, 
+                    total_balanza, 
+                    total_mercaderia, 
+                    total_adicional_credito,
+                    total_descuento
+                } = req.body;
 
             // Recepcion de productos
             const productos: any[] = req.body.productos;
-
-            // Se genera codigo de ingreso
-            const ultimaVenta: any = await VentaModel.find().sort({ createdAt: -1 });
-            var codigo = ultimaVenta.length != 0 ? ultimaVenta[0].codigo + 1 : 0;
 
             // Se agregar el usuario creador a la data
             const usuarioLogin = await UsuarioModel.findById(uid, 'apellido nombre');
@@ -63,10 +66,11 @@ class Ventas {
 
             // Se genera la data para almacenar en la DB
             const data = { 
-                codigo,
                 precio_total,
                 total_balanza,
                 total_mercaderia,
+                total_adicional_credito,
+                total_descuento,
                 forma_pago,
                 descuento_porcentual,
                 usuario_creacion

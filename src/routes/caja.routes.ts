@@ -10,6 +10,14 @@ const router = Router();
 // GET - http://localhost:3000/api/cajas/saldo_inicial
 router.get('/saldo_inicial', validaciones.jwt, CajasController.getSaldoInicial);
 
+// Cajas por ID
+// GET - http://localhost:3000/api/cajas/:id
+router.get('/:id', validaciones.jwt, CajasController.getCaja);
+
+// Listar cajas
+// GET - http://localhost:3000/api/cajas
+router.get('/', validaciones.jwt, CajasController.listarCajas);
+
 // Nueva caja
 router.post('/', validaciones.jwt, [
     check('saldo_inicial', 'El saldo inicial es un campo obligatorio').not().isEmpty(),

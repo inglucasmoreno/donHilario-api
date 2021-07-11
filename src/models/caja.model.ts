@@ -5,6 +5,7 @@ export interface I_Caja extends mongoose.Document {
     saldo_inicial: Number,
     total_balanza: Number,
     total_mercaderia: Number,
+    total_descuento: Number,
     total_efectivo: Number,
     total_efectivo_real: Number,
     diferencia: Number,
@@ -35,6 +36,12 @@ const cajaSchema = new Schema({
         type: Number,
         min: 0,
         require: 'El total en mercaderia es un valor obligatorio'
+    },
+
+    total_descuentos: {
+        type: Number,
+        min: 0,
+        default: 0       
     },
 
     total_efectivo: {

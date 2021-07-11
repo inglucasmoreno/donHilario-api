@@ -2,18 +2,15 @@ import mongoose, { Schema, model } from 'mongoose';
 
 // Interfaz - Venta
 export interface I_Venta extends mongoose.Document {
-    codigo: Number,
     precio_total: Number,
     usuario_creacion: String,
+    total_descuento: Number,
+    total_adicional_credito: Number,
     activo: Boolean,
 };
 
 // Modelo - Venta
 const ventaSchema = new Schema({
-    codigo: {
-        type: Number,
-        trim: true
-    },
     precio_total: {
         type: Number,
         trim: true,
@@ -34,10 +31,15 @@ const ventaSchema = new Schema({
         trim: true,
         require: 'La forma de pago es un campo obligatorio'      
     },
-    descuento_porcentual: {
+    total_adicional_credito: { 
         type: Number,
         trim: true,
-        require: 'EL descuento porcentual es un campo obligatorio' 
+        default: 0
+    },
+    total_descuento: { 
+        type: Number,
+        trim: true,
+        default: 0
     },
     usuario_creacion: {
         type: String,

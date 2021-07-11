@@ -10,6 +10,8 @@ import OtrosIngresosModel from '../models/otros_ingresos.model';
 import OtrosGastosModel from '../models/otros_gastos.model';
 import BilletesModel from '../models/billetes.model';
 import UsuarioModel from '../models/usuarios.model';
+import otros_gastosModel from '../models/otros_gastos.model';
+import otros_ingresosModel from '../models/otros_ingresos.model';
 
 class Caja {
     
@@ -44,6 +46,49 @@ class Caja {
             console.log(chalk.red(err));
             respuesta.error(res, 500);
         } 
+    }
+
+
+    // Metodo: Caja por ID
+    public async getCaja(req: Request, res: Response) {
+        try{
+            const id = req.params.id;
+            
+            // Datos de caja
+            const caja = await CajaModel.findById(id);
+            
+            // Datos de otros ingresos
+            const otrosIngresos = await OtrosIngresosModel.find({caja: id}).sort({createdAt: -1});
+
+            // Datos de otros gastos
+            const otrosGastos = await OtrosGastosModel.find({caja: id}).sort({createdAt: -1});
+
+            // Datos de billetes
+            const billetes = await BilletesModel.findOne({caja: id})
+
+            respuesta.success(res, { caja, otrosIngresos, otrosGastos, billetes });
+        }catch(err){
+            console.log(chalk.red(err));
+            respuesta.error(res, 500);
+        }
+        const id = req.params;
+    }
+
+    // Metodo: Listar cajas
+    public async listarCajas(req: Request, res: Response) {
+
+        const { columna, direccion } = req.query;
+
+        // Ordenar
+        let ordenar = [columna || 'createdAt', direccion || -1];  
+
+        try{
+            const cajas = await CajaModel.find().sort([ordenar]);
+            respuesta.success(res, { cajas });
+        }catch(err){
+            console.log(chalk.red(err));
+            respuesta.error(res, 500);
+        }    
     }
 
     // Metodo: Nueva caja
