@@ -33,6 +33,10 @@ const ventaProductosSchema = new Schema({
         trim: true,
         require: 'El precio unitario es un campo obligatorio'
     },
+    promocion: {
+        type: Boolean,
+        default: false
+    },
     precio_total: {
         type: Number,
         trim: true,

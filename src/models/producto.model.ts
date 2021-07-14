@@ -62,12 +62,29 @@ const productoSchema = new Schema({
         min: 0          
     },
    
+    precio_costo: {
+        type: Number,
+        required: 'El precio de costo es un campo obligatorio',
+        min: 0
+    },
+
     precio: {
-        type: Number, // revisar decimales
+        type: Number,
         required: 'El precio es un campo obligatorio',
         min: 0
     },
-   
+
+    precio_promocion: {
+        type: Number,
+        default: 0,
+        min: 0
+    },
+
+    promocion: {
+        type: Boolean,
+        default: false
+    },
+    
     activo: {
         type: Boolean,
         required: 'Activo es un campo obligatorio',

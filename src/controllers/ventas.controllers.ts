@@ -87,6 +87,7 @@ class Ventas {
                     cantidad: elemento.cantidad,
                     producto: elemento.producto,
                     precio_unitario: elemento.precio_unitario,
+                    promocion: elemento.promocion,
                     precio_total: elemento.precio_total,
                     usuario_creacion
                 }

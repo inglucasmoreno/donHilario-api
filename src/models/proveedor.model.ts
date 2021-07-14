@@ -33,6 +33,13 @@ const proveedorSchema = new Schema({
         default: 'SIN DOMICILIO'
     },
 
+    telefono: {
+        type: String,
+        trim: true,
+        uppercase: true,
+        default: 'SIN TELEFONO'
+    },
+
     condicion_iva: {
         type: String,
         trim: true,

@@ -38,6 +38,12 @@ const cajaSchema = new Schema({
         require: 'El total en mercaderia es un valor obligatorio'
     },
 
+    total_adicional_credito: {
+        type: Number,
+        min: 0,
+        default: 0       
+    },
+
     total_descuentos: {
         type: Number,
         min: 0,
