@@ -53,7 +53,7 @@ const billetesSchema = new Schema({
         require: 'Cien es un valor obligatorio'
     },
 
-    doscientes: {
+    doscientos: {
         type: Number,
         min: 0,
         require: 'Doscientos es un valor obligatorio'
