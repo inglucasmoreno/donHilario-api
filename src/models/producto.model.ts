@@ -57,11 +57,16 @@ const productoSchema = new Schema({
    
     cantidad_minima: {
         type: Number,
-        required: 'La cantidad minima es un campo obligatorio',
         default: 0,
         min: 0          
     },
    
+    porcentaje_ganancia: {
+        type: Number,
+        default: 1,
+        min: 1
+    },
+
     precio_costo: {
         type: Number,
         required: 'El precio de costo es un campo obligatorio',
