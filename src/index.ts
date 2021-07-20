@@ -31,7 +31,7 @@ const app = express();
 app.set('PORT', process.env.PORT || 3000);
 app.use(require('cors')());
 app.use(express.json());
-app.use(express.static('src/public'));
+app.use(express.static('public'));
 
 // [MongoDB]
 db.connection();

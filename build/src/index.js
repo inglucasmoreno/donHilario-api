@@ -5,7 +5,7 @@
     Año: 2021
     Cliente: Carniceria Don Hilario
 */
-var __importDefault = (this && this.__importDefault) || function(mod) {
+var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -32,7 +32,7 @@ const app = express_1.default();
 app.set('PORT', process.env.PORT || 3000);
 app.use(require('cors')());
 app.use(express_1.default.json());
-app.use(express_1.default.static('public'));
+app.use(express_1.default.static('src/public'));
 // [MongoDB]
 config_1.db.connection();
 // [Rutas]
