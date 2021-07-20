@@ -5,7 +5,7 @@
     Año: 2021
     Cliente: Carniceria Don Hilario
 */
-var __importDefault = (this && this.__importDefault) || function (mod) {
+var __importDefault = (this && this.__importDefault) || function(mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -50,7 +50,7 @@ app.use('/api/otros_ingresos', otros_ingresos_routes_1.default);
 app.use('/api/cajas', caja_routes_1.default);
 // [Necesario para no perder las rutas en produccion]
 app.get('*', (req, res) => {
-    res.sendFile(path_1.default.resolve(__dirname, 'public/index.html'));
+    res.sendFile(path_1.default.resolve(__dirname, 'index.html'));
 });
 // Ejecución de servidor
 app.listen(app.get('PORT'), () => {
