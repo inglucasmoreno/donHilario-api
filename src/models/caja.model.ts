@@ -72,6 +72,24 @@ const cajaSchema = new Schema({
         require: 'El total en postnet es un valor obligatorio'
     }, 
 
+    total_debito: {
+        type: Number,
+        min: 0,
+        require: 'El total en debito es un valor obligatorio'
+    }, 
+
+    total_mercadopago: {
+        type: Number,
+        min: 0,
+        require: 'El total en mercadopago es un valor obligatorio'
+    },
+
+    total_credito: {
+        type: Number,
+        min: 0,
+        require: 'El total en credito es un valor obligatorio'
+    },
+
     total_ventas: {
         type: Number,
         min: 0,
