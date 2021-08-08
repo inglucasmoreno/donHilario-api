@@ -16,7 +16,7 @@ const bdConnection = async() => {
 }
 
 // Inicializacion de usuarios
-const initUsers = async() => {
+const initUsers = async () => {
     const data: any = {
         usuario: 'admin',
         apellido: 'Admin',
@@ -38,7 +38,7 @@ const initUsers = async() => {
 }
 
 // Principal: Inicializacion de base de datos
-const initialization = async() => {
+const initialization = async () => {
     try {
 
         // Conexion con MongoDB

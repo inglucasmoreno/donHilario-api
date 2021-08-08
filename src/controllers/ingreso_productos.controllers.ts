@@ -5,6 +5,7 @@ import { respuesta } from '../helpers/response';
 
 import ProductoModel from '../models/producto.model';
 import UsuarioModel from '../models/usuarios.model'; 
+import MediaResModel from '../models/mediaRes.model';
 import IngresoProductoModel, { I_IngresoProducto } from '../models/ingreso_productos.model';
 import mongoose from 'mongoose';
 
@@ -75,6 +76,39 @@ class IngresoProducto {
             console.log(chalk.red(err));
             respuesta.error(res, 500);    
         }
+    }
+
+    // Metodo: Nueva media res
+    public async nuevaMediaRes(req: any, res: Response){
+         try{
+            
+            const uid = req.uid;
+            const {idIngreso, cantidad} = req.body;
+
+            // Se traen los productos de la media res
+            const productos: any[] = await MediaResModel.find();
+                
+            // Se buscan los datos del usuario logueado
+            const usuarioLogin = await UsuarioModel.findById(uid, 'apellido nombre');
+            const usuario_creacion = usuarioLogin.apellido + ' ' + usuarioLogin.nombre;
+
+            productos.forEach( async producto => {
+                const nuevoProducto = new IngresoProductoModel({
+                    activo: true,
+                    ingreso: idIngreso,
+                    producto: producto.id_producto,
+                    cantidad: Number((producto.cantidad * cantidad).toFixed(2)),
+                    usuario_creacion
+                });
+                await nuevoProducto.save();
+            });
+
+            respuesta.success(res, 'Media res cargada');
+        
+        }catch(err){
+             console.log(chalk.red(err));
+             respuesta.error(res, 500);
+         }   
     }
 
     // Metodo: Nuevo Producto - Ingreso

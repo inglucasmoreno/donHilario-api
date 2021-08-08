@@ -29,6 +29,16 @@ router.post('/',
                 validaciones.campos
             ], IngresoProductoController.nuevoProducto);
 
+// Nueva media res
+// POST - http://localhost:3000/api/ingreso_producto/mediaRes
+router.post('/mediaRes', 
+            [    
+                validaciones.jwt,
+                check('idIngreso', 'El ID del ingreso es un campo obligatorio').not().isEmpty(),
+                check('cantidad', 'La cantidad es un campo obligatorio').not().isEmpty(),
+                validaciones.campos
+            ], IngresoProductoController.nuevaMediaRes);
+
 // Actualizar producto
 // PUT - http://localhost:3000/api/ingresos_producto/:id
 router.put('/:id', validaciones.jwt, IngresoProductoController.actualizarProducto);

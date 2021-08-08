@@ -14,7 +14,7 @@ class Ventas {
     public async getVenta(req: Request, res: Response) {
         try{
             const id = req.params.id;
-            const venta: I_Venta = await VentaModel.findById(id);
+            const venta: I_Venta = await VentaModel.findById(id).populate('mayorista');
             respuesta.success(res, { venta });
         }catch(err){
             console.log(chalk.red(err));
@@ -53,9 +53,11 @@ class Ventas {
                     total_balanza, 
                     total_mercaderia, 
                     total_adicional_credito,
+                    venta_mayorista,
+                    mayorista,
                     total_descuento
                 } = req.body;
-
+        
             // Recepcion de productos
             const productos: any[] = req.body.productos;
 
@@ -66,13 +68,15 @@ class Ventas {
 
             // Se genera la data para almacenar en la DB
             const data = { 
-                precio_total,
+                descuento_porcentual,
+                forma_pago,
                 total_balanza,
+                precio_total,
                 total_mercaderia,
                 total_adicional_credito,
+                venta_mayorista,
+                mayorista: mayorista !== '' ? mayorista : null,
                 total_descuento,
-                forma_pago,
-                descuento_porcentual,
                 usuario_creacion
             };
             

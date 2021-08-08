@@ -3,9 +3,13 @@ import mongoose, { Schema, model } from 'mongoose';
 // Interfaz - Venta
 export interface I_Venta extends mongoose.Document {
     precio_total: Number,
-    usuario_creacion: String,
-    total_descuento: Number,
+    total_balanza: Number,
+    total_mercaderia: Number,
+    forma_pago: String,
     total_adicional_credito: Number,
+    total_descuento: Number,
+    venta_mayorista: Boolean,
+    usuario_creacion: String,
     activo: Boolean,
 };
 
@@ -40,6 +44,15 @@ const ventaSchema = new Schema({
         type: Number,
         trim: true,
         default: 0
+    },
+    venta_mayorista: {
+        type: Boolean,
+        default: false    
+    },
+    mayorista: {
+        type: Schema.Types.ObjectId,
+        ref: 'mayorista',
+        default: null
     },
     usuario_creacion: {
         type: String,

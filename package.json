@@ -8,7 +8,8 @@
         "start": "node build/src/.",
         "start:dev": "nodemon",
         "start:ts": "ts-node src/index.ts",
-        "start:init": "ts-node src/database/init.ts"
+        "start:init": "ts-node src/database/init.ts",
+        "start:init-productos": "ts-node src/database/init-productos.ts"
     },
     "keywords": [],
     "author": "Equinoccio Technology",
