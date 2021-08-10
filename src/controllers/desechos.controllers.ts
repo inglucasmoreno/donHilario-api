@@ -18,6 +18,17 @@ class Desecho {
         }        
     }
 
+    // Metodo: Completar desechos
+    public async completarDesechos(req: Request, res: Response) {
+        try{
+            await DesechoModel.updateMany({activo: true}, {activo: false});
+            respuesta.success(res, 'Cierre completado correctamente');
+        }catch(err){
+            console.log(chalk.red(err));
+            respuesta.error(res, 500);
+        }
+    }
+
     // Metodo: Listar desechos
     public async listarDesechos(req: Request, res: Response) {
         try{
@@ -87,6 +98,18 @@ class Desecho {
             respuesta.success(res, { desecho });
         
         }catch(err){    
+            console.log(chalk.red(err));
+            respuesta.error(res, 500);
+        }
+    }
+
+    // Metodo: Eliminar desecho
+    public async eliminarDesecho(req: Request, res: Response) {
+        try{
+            const { id } = req.params;
+            await DesechoModel.findByIdAndDelete(id);
+            respuesta.success(res, 'Producto eliminado correctamente');
+        }catch(err){
             console.log(chalk.red(err));
             respuesta.error(res, 500);
         }

@@ -59,17 +59,17 @@ class MediaRes {
     }
 
     // Metodo: Actualizar producto de media res
-    public async actualizarMediaRes(req: Request, res: Response) {
+    public async actualizarMediaRes(req: any, res: Response) {
         try{
-    
-            const id = req.params.id;
+
+            const productos: any[] = req.body;
             
-            // Se verifica si el producto a actualizar existe
-            const dbMediaRes = await MediaResModel.findById(id);
-            if(!dbMediaRes) return respuesta.error(res, 400, 'El producto no existe');
+            productos.forEach(async producto => {
+                await MediaResModel.findByIdAndUpdate(producto._id, { cantidad: producto.cantidad }, {new: true});   
+            });
         
-            const producto = await MediaResModel.findByIdAndUpdate(id, req.body, {new: true});
-            respuesta.success(res, { producto });
+            respuesta.success(res, 'Actualizacion correcta');
+
         }catch(err){    
             console.log(chalk.red(err));
             respuesta.error(res, 500);

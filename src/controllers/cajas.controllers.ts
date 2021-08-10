@@ -10,8 +10,7 @@ import OtrosIngresosModel from '../models/otros_ingresos.model';
 import OtrosGastosModel from '../models/otros_gastos.model';
 import BilletesModel from '../models/billetes.model';
 import UsuarioModel from '../models/usuarios.model';
-import otros_gastosModel from '../models/otros_gastos.model';
-import otros_ingresosModel from '../models/otros_ingresos.model';
+
 
 class Caja {
     

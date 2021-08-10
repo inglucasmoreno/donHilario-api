@@ -24,8 +24,16 @@ router.post('/',
                 validaciones.campos
             ], DesechoController.nuevoDesecho);
 
+// Completar Desechos
+// PUT - http://localhost:3000/api/desechos/:id 
+router.put('/completar', validaciones.jwt, DesechoController.completarDesechos);
+
 // Actualizar desecho
 // PUT - http://localhost:3000/api/desechos/:id 
 router.put('/:id', validaciones.jwt, DesechoController.actualizarDesecho);
+
+// Eliminar desecho
+// DELETE - http://localhost:3000/api/desechos/:id 
+router.delete('/:id', validaciones.jwt, DesechoController.eliminarDesecho);
 
 export default router;

@@ -15,6 +15,6 @@ router.get('/', validaciones.jwt, MediaResController.listarMediaRes);
 
 // Actualizar producto de media res
 // PUT - http://localhost:3000/api/mayoristas/:id 
-router.put('/:id', validaciones.jwt, MediaResController.actualizarMediaRes);
+router.put('/', validaciones.jwt, MediaResController.actualizarMediaRes);
 
 export default router;
