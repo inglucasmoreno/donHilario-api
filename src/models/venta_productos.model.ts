@@ -6,8 +6,10 @@ export interface I_VentaProductos extends mongoose.Document {
     producto: Schema.Types.ObjectId,
     cantidad: Number,
     precio_unitario: Number,
+    promocion: Boolean,
     precio_total: Number,
-    usuario_crecion: String,
+    tipo: String,
+    usuario_creacion: String,
     activo: Boolean
 };
 
@@ -41,6 +43,11 @@ const ventaProductosSchema = new Schema({
         type: Number,
         trim: true,
         require: 'El precio total es un campo obligatorio'
+    },
+    tipo: {
+        type: String,
+        trim: true,
+        required: 'El tipo de producto es obligatorio'
     },
     usuario_creacion: {
         type: String,

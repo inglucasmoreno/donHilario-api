@@ -93,6 +93,7 @@ class Ventas {
                     precio_unitario: elemento.precio_unitario,
                     promocion: elemento.promocion,
                     precio_total: elemento.precio_total,
+                    tipo: elemento.tipo,
                     usuario_creacion
                 }
                 
