@@ -14,8 +14,8 @@ class Reportes {
      public async ventas(req: any, res: Response) {
         try{
             
-            const { fechaDesde, fechaHasta } = req.body;
-    
+            const { fechaDesde, fechaHasta, tipo_venta, mayoristaSeleccionado } = req.body;
+            
             // Creacion de PIPELINE
             const pipeline = [];
             const pipelineOtros = [];
@@ -23,6 +23,22 @@ class Reportes {
             // Filtro: Todas las ventas
             pipeline.push({ $match: { }});
             pipelineOtros.push({ $match: { }});
+
+            // Filtro: Mayoristas - Todos los mayoristas
+            if(tipo_venta === 'sin_mayoristas'){
+                pipeline.push({ $match: { venta_mayorista: false }});
+            }
+
+            // Filtro: Mayoristas - Todos los mayoristas
+            if(tipo_venta === 'con_mayoristas' && mayoristaSeleccionado === ''){
+                pipeline.push({ $match: { venta_mayorista: true }});
+            }
+
+            // Filtro: Mayoristas
+            if(tipo_venta === 'con_mayoristas' && mayoristaSeleccionado !== ''){
+                pipeline.push({ $match: { venta_mayorista: true }});
+                pipeline.push({ $match: { mayorista: mongoose.Types.ObjectId(mayoristaSeleccionado) }});
+            }
 
             // Filtro: fechas [Desde - Hasta]
             if(fechaDesde){
