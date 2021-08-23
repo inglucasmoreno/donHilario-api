@@ -10,9 +10,9 @@ const router = Router();
 // POST - http://localhost:3000/api/reportes/ventas
 router.post('/ventas', validaciones.jwt, ReportesController.ventas);
 
-// Reporte: Ventas Mayoristas
-// POST - http://localhost:3000/api/reportes/ventas-mayoristas
-router.post('/ventas-mayoristas', validaciones.jwt, ReportesController.ventasMayoristas);
+// Reporte: Ventas
+// POST - http://localhost:3000/api/reportes/productos
+router.post('/productos', validaciones.jwt, ReportesController.productos);
 
 // Reporte: Cantidades vs Desechos
 // GET - http://localhost:3000/api/reportes/cantidades-desechos

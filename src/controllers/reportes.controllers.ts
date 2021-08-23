@@ -6,6 +6,8 @@ import VentaProductosModel from '../models/venta_productos.model';
 import VentaModel from '../models/venta.model';
 import OtrosIngresosModel from '../models/otros_ingresos.model';
 import OtrosGastosModel from '../models/otros_gastos.model';
+import VentaProductoModel from '../models/venta_productos.model';
+import IngresoProductoModel from '../models/ingreso_productos.model';
 import mongoose from 'mongoose';
 
 class Reportes {
@@ -75,41 +77,49 @@ class Reportes {
             respuesta.error(res, 500);
         }
     }
-
-    // Reportes: Ventas - Mayoristas
-    public async ventasMayoristas(req: Request, res: Response) {
+    
+    // Productos
+    public async productos(req: any, res: Response) {
         try{
-            
-            const { fechaDesde, fechaHasta, mayorista } = req.body;
+               
+            const { fechaDesde, fechaHasta, producto } = req.body;
 
-            // Creacion de PIPELINE
             const pipeline = [];
-            
-            // Filtro: Ventas a mayorista
-            pipeline.push({ $match: { venta_mayorista: true }});
 
-            // Filtro: Por ID de mayorista
-            if(mayorista){
-                pipeline.push({$match: { mayorista: mongoose.Types.ObjectId(mayorista) }});
-            }
+            // Filtro: Todas los productos vendidos
+            pipeline.push({ $match: { }});
 
             // Filtro: fechas [Desde - Hasta]
             if(fechaDesde){
-                pipeline.push({$match: { createdAt: { $gte: new Date(fechaDesde) } }});    
+                pipeline.push({$match: { createdAt: { $gte: new Date(fechaDesde) } }});
             }
-
-            if(fechaHasta){
-                pipeline.push({$match: { createdAt: { $lte: new Date(fechaHasta) } }});    
-            }
-            
-            const ventaMayorista = await VentaModel.aggregate(pipeline);
     
-            respuesta.success(res, {ventaMayorista});
+            if(fechaHasta){
+                pipeline.push({$match: { createdAt: { $lte: new Date(fechaHasta) } }});
+            }
 
+            // Filtro: Producto
+            if(producto){
+                pipeline.push({$match: { producto: mongoose.Types.ObjectId(producto) }});
+            }
+
+            // Ordenando datos
+            const ordenar: any = {};
+            if(req.query.columna){
+                ordenar[req.query.columna] = Number(req.query.direccion); 
+                pipeline.push({$sort: ordenar});
+            }
+
+            // Se obtienen los datos
+            const productosVenta =  await VentaProductoModel.aggregate(pipeline);
+            const productosIngresos =  await IngresoProductoModel.aggregate(pipeline);
+    
+            respuesta.success(res, { productosVenta, productosIngresos });  
+                
         }catch(error){
             console.log(chalk.red(error));
             respuesta.error(res, 500);
-        }
+        }    
     }
 
     // Cantidades vs Desechos
