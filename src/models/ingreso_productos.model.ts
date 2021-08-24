@@ -18,6 +18,12 @@ const ingresoProductoSchema = new Schema({
         required: 'El ingreso es obligatorio'
     },
 
+    proveedor: {
+        type: Schema.Types.ObjectId,
+        ref: 'proveedor',
+        required: 'El proveedor es obligatorio'
+    },
+
     producto: {
         type: Schema.Types.ObjectId,
         ref: 'producto',

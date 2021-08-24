@@ -82,7 +82,7 @@ class Reportes {
     public async productos(req: any, res: Response) {
         try{
                
-            const { fechaDesde, fechaHasta, producto } = req.body;
+            const { fechaDesde, fechaHasta, productoSeleccionado, tipo_filtro, proveedorSeleccionado, tipo_egreso, mayoristaSeleccionado } = req.body;
 
             const pipeline = [];
 
@@ -90,31 +90,87 @@ class Reportes {
             pipeline.push({ $match: { }});
 
             // Filtro: fechas [Desde - Hasta]
-            if(fechaDesde){
-                pipeline.push({$match: { createdAt: { $gte: new Date(fechaDesde) } }});
+            if(fechaDesde) pipeline.push({$match: { createdAt: { $gte: new Date(fechaDesde) } }});
+            if(fechaHasta) pipeline.push({$match: { createdAt: { $lte: new Date(fechaHasta) } }});
+            
+            // Filtro: Producto
+            if(productoSeleccionado) pipeline.push({$match: { producto: mongoose.Types.ObjectId(productoSeleccionado) }});
+
+            // Filtro: Proveedor
+            if(tipo_filtro === 'Ingresos' && proveedorSeleccionado !== ''){
+                pipeline.push({$match: { proveedor: mongoose.Types.ObjectId(proveedorSeleccionado) }});               
+            }
+
+            // Join con productos
+            pipeline.push({
+                $lookup: {
+                    from: 'productos',
+                    localField: 'producto',
+                    foreignField: '_id',
+                    as: 'producto'
+                }
+            });
+            pipeline.push({$unwind: '$producto'});   
+
+            // Join con productos - unidad de medidad
+            pipeline.push({
+                $lookup: {
+                    from: 'unidad_medida',
+                    localField: 'producto.unidad_medida',
+                    foreignField: '_id',
+                    as: 'producto.unidad_medida'
+                }
+            });
+            pipeline.push({$unwind: '$producto.unidad_medida'});  
+
+            // Join con ventas
+            if(tipo_filtro === 'Egresos'){
+                pipeline.push({
+                    $lookup: {
+                        from: 'ventas',
+                        localField: 'venta',
+                        foreignField: '_id',
+                        as: 'venta'
+                    }
+                });
+                pipeline.push({$unwind: '$venta'});   
+            }
+
+            // Filtro: Mayoristas
+
+            // Egresos sin mayoristas
+            if(tipo_filtro === 'Egresos' && tipo_egreso === 'sin_mayoristas'){
+                pipeline.push({$match: { 'venta.venta_mayorista': false }});    
+            }
+
+            // Egreso solo de mayoristas
+            if(tipo_filtro === 'Egresos' && tipo_egreso === 'solo_mayoristas' && mayoristaSeleccionado === ''){
+                pipeline.push({$match: { 'venta.venta_mayorista': true }});
+            }
+
+            // Egreso de un mayorista en particular
+            if(tipo_filtro === 'Egresos' && tipo_egreso === 'solo_mayoristas' && mayoristaSeleccionado !== ''){
+                pipeline.push({$match: { 'venta.mayorista': mongoose.Types.ObjectId(mayoristaSeleccionado)}});
             }
     
-            if(fechaHasta){
-                pipeline.push({$match: { createdAt: { $lte: new Date(fechaHasta) } }});
-            }
-
-            // Filtro: Producto
-            if(producto){
-                pipeline.push({$match: { producto: mongoose.Types.ObjectId(producto) }});
-            }
-
             // Ordenando datos
             const ordenar: any = {};
             if(req.query.columna){
                 ordenar[req.query.columna] = Number(req.query.direccion); 
                 pipeline.push({$sort: ordenar});
             }
+            
+            let productos: any[] = [];
+
+            if(tipo_filtro === 'Ingresos'){
+                productos =  await IngresoProductoModel.aggregate(pipeline);
+            }else{
+                productos =  await VentaProductoModel.aggregate(pipeline);
+            }
 
             // Se obtienen los datos
-            const productosVenta =  await VentaProductoModel.aggregate(pipeline);
-            const productosIngresos =  await IngresoProductoModel.aggregate(pipeline);
     
-            respuesta.success(res, { productosVenta, productosIngresos });  
+            respuesta.success(res, { productos });  
                 
         }catch(error){
             console.log(chalk.red(error));

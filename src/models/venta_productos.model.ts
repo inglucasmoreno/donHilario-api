@@ -18,11 +18,12 @@ const ventaProductosSchema = new Schema({
     venta: {
         type: Schema.Types.ObjectId,
         trim: true,
+        ref: 'venta',
         require: 'La venta es un campo obligatorio'
     },
     producto: {
         type: Schema.Types.ObjectId,
-        trim: true,
+        ref: 'producto',
         require: 'El producto es un campo obligatorio'
     },
     cantidad: {

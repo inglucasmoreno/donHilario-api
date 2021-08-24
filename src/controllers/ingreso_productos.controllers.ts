@@ -83,7 +83,7 @@ class IngresoProducto {
          try{
 
             const uid = req.uid;
-            const {idIngreso, cantidad} = req.body;
+            const {idIngreso, cantidad, proveedor} = req.body;
 
             // Se traen los productos de la media res
             const productos: any[] = await MediaResModel.find();
@@ -109,6 +109,7 @@ class IngresoProducto {
                     activo: true,
                     ingreso: idIngreso,
                     producto: producto.id_producto,
+                    proveedor,
                     cantidad: Number((producto.cantidad * cantidad).toFixed(2)),
                     usuario_creacion
                 });
@@ -128,7 +129,7 @@ class IngresoProducto {
         try{
 
             const uid = req.uid;
-            let {codigo, ingreso, cantidad} = req.body;
+            let {codigo, ingreso, proveedor, cantidad} = req.body;
 
             let producto: any;
 
@@ -155,7 +156,7 @@ class IngresoProducto {
             const usuario_creacion = usuarioLogin.apellido + ' ' + usuarioLogin.nombre;
 
             // Se crea el nuevo productoIngreso
-            const data = { ingreso, producto: producto._id , cantidad, usuario_creacion };
+            const data = { ingreso, producto: producto._id , proveedor, cantidad, usuario_creacion };
             const ingresoProducto = new IngresoProductoModel(data);
             const response = await ingresoProducto.save();
 

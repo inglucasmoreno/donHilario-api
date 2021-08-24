@@ -25,6 +25,7 @@ router.post('/',
                 validaciones.jwt,
                 check('codigo', 'El codigo es un campo obligatorio').not().isEmpty(),
                 check('ingreso', 'El ingreso es un campo obligatorio').not().isEmpty(),
+                check('proveedor', 'El proveedor es un campo obligatorio').not().isEmpty(),
                 check('cantidad', 'La cantidad es un campo obligatorio').not().isEmpty(),
                 validaciones.campos
             ], IngresoProductoController.nuevoProducto);
