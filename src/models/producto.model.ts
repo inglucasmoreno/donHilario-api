@@ -4,12 +4,18 @@ import mongoose, { Schema, model } from 'mongoose';
 export interface I_Producto extends mongoose.Document {
     _id: String,
     codigo: String,
+    tipo: String,
     descripcion: String,
     unidad_medida: Schema.Types.ObjectId,
     cantidad: Number,
     stock_minimo: Number,
     cantidad_minima: Number,
+    porcentaje_ganancia: Number,
+    precio_costo: Number,
     precio: Number,
+    precio_promocion: Number,
+    promocion: Boolean,
+    carne: Boolean,
     activo: Number
 }
 
@@ -90,6 +96,11 @@ const productoSchema = new Schema({
         default: false
     },
     
+    carne: {
+        type: Boolean,
+        default: false
+    },
+
     activo: {
         type: Boolean,
         required: 'Activo es un campo obligatorio',

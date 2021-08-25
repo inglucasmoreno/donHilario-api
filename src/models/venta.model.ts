@@ -9,6 +9,7 @@ export interface I_Venta extends mongoose.Document {
     total_adicional_credito: Number,
     total_descuento: Number,
     venta_mayorista: Boolean,
+    mayorista: Schema.Types.ObjectId,
     usuario_creacion: String,
     activo: Boolean,
 };

@@ -94,6 +94,7 @@ class Ventas {
                     promocion: elemento.promocion,
                     precio_total: elemento.precio_total,
                     tipo: elemento.tipo,
+                    carne: elemento.carne,
                     usuario_creacion
                 }
                 

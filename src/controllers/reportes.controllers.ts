@@ -93,9 +93,6 @@ class Reportes {
             if(fechaDesde) pipeline.push({$match: { createdAt: { $gte: new Date(fechaDesde) } }});
             if(fechaHasta) pipeline.push({$match: { createdAt: { $lte: new Date(fechaHasta) } }});
             
-            // Filtro: Producto
-            if(productoSeleccionado) pipeline.push({$match: { producto: mongoose.Types.ObjectId(productoSeleccionado) }});
-
             // Filtro: Proveedor
             if(tipo_filtro === 'Ingresos' && proveedorSeleccionado !== ''){
                 pipeline.push({$match: { proveedor: mongoose.Types.ObjectId(proveedorSeleccionado) }});               
@@ -111,6 +108,15 @@ class Reportes {
                 }
             });
             pipeline.push({$unwind: '$producto'});   
+
+            // Filtro: Producto
+            if(productoSeleccionado !== 'todo_carnes' && productoSeleccionado !== 'todo_mercaderia'){
+                pipeline.push({$match: { 'producto._id': mongoose.Types.ObjectId(productoSeleccionado) }});
+            }else if(productoSeleccionado === 'todo_carnes'){
+                pipeline.push({$match: { 'producto.carne': true }});
+            }else if(productoSeleccionado === 'todo_mercaderia'){
+                pipeline.push({$match: { 'producto.tipo': 'Normal' }});
+            }
 
             // Join con productos - unidad de medidad
             pipeline.push({
@@ -185,7 +191,7 @@ class Reportes {
 
             // Consulta a base de datos
             const desechos: any[] = await DesechosModel.find({createdAt: { $gte: new Date(fechaDesde), $lte: new Date(fechaHasta) }});
-            const productos: any[] = await VentaProductosModel.find({$and: [{createdAt: { $gte: new Date(fechaDesde), $lte: new Date(fechaHasta)}}, {tipo:'Balanza'}]});
+            const productos: any[] = await VentaProductosModel.find({$and: [{createdAt: { $gte: new Date(fechaDesde), $lte: new Date(fechaHasta)}}, {carne: true}]});
 
             let desechosTotal = 0;
             let cantidadTotal = 0;

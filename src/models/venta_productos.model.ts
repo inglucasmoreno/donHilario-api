@@ -9,6 +9,7 @@ export interface I_VentaProductos extends mongoose.Document {
     promocion: Boolean,
     precio_total: Number,
     tipo: String,
+    carne: Boolean,
     usuario_creacion: String,
     activo: Boolean
 };
@@ -49,6 +50,10 @@ const ventaProductosSchema = new Schema({
         type: String,
         trim: true,
         required: 'El tipo de producto es obligatorio'
+    },
+    carne: {
+        type: Boolean,
+        default: false
     },
     usuario_creacion: {
         type: String,
