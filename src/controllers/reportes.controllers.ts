@@ -158,14 +158,22 @@ class Reportes {
             if(tipo_filtro === 'Egresos' && tipo_egreso === 'solo_mayoristas' && mayoristaSeleccionado !== ''){
                 pipeline.push({$match: { 'venta.mayorista': mongoose.Types.ObjectId(mayoristaSeleccionado)}});
             }
-    
+                
+            // GROUP
+            pipeline.push({
+                $group: {
+                    _id: { createdAt: {$dateToString: { format: "%d-%m-%Y", date: "$createdAt" }}, tipo:'$producto.tipo' ,producto: '$producto.descripcion', unidad:'$producto.unidad_medida.descripcion' },
+                    cantidad: { $sum: '$cantidad' }
+                }
+            });
+
             // Ordenando datos
             const ordenar: any = {};
             if(req.query.columna){
                 ordenar[req.query.columna] = Number(req.query.direccion); 
                 pipeline.push({$sort: ordenar});
             }
-            
+
             let productos: any[] = [];
 
             if(tipo_filtro === 'Ingresos'){
@@ -173,8 +181,6 @@ class Reportes {
             }else{
                 productos =  await VentaProductoModel.aggregate(pipeline);
             }
-
-            // Se obtienen los datos
     
             respuesta.success(res, { productos });  
                 

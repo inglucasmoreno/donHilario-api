@@ -29,6 +29,7 @@ import OtrosIngresosRoutes from './routes/otros_ingresos.routes';
 import OtrosGastosRoutes from './routes/otros_gastos.routes';
 import ReportesRoutes from './routes/reportes.routes';
 import CajasRoutes from './routes/caja.routes';
+import ReportesExcelRoutes from './routes/reportes_excel.routes';
 
 // [Express]
 const app = express();
@@ -57,6 +58,7 @@ app.use('/api/ventas_productos', VentasProductosRoutes);
 app.use('/api/otros_gastos', OtrosGastosRoutes);
 app.use('/api/otros_ingresos', OtrosIngresosRoutes);
 app.use('/api/reportes', ReportesRoutes);
+app.use('/api/reportes-excel', ReportesExcelRoutes);
 app.use('/api/cajas', CajasRoutes);
 
 // [Necesario para no perder las rutas en produccion]
