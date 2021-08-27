@@ -12,7 +12,13 @@ class ReportesExcel {
         try{
 
             const ventas: any[] = req.body.ventas;
-            const { totalVentas, montoTotalBalanza, montoTotalMercaderia, totalAdicionalCredito, totalDescuentos, totalOtrosIngresos, totalOtrosGastos } = req.body;
+            const { totalVentas, 
+                    montoTotalBalanza, 
+                    montoTotalMercaderia, 
+                    totalAdicionalCredito, 
+                    totalDescuentos, 
+                    totalOtrosIngresos, 
+                    totalOtrosGastos } = req.body;
 
             const workbook = new ExcelJs.Workbook();
             const worksheet = workbook.addWorksheet('Don Hilario - Ventas');
@@ -62,12 +68,14 @@ class ReportesExcel {
         try{
             const busquedas: any[] = req.body.busqueda;
             const cantidad: number = req.body.cantidad;
+            const tipo_filtro: any = req.body.tipo_filtro;
 
             const workbook = new ExcelJs.Workbook();
             const worksheet = workbook.addWorksheet('Don Hilario - Productos');
 
-            worksheet.addRow(['Total de filas', busquedas.length]);
-            worksheet.addRow(['Total de productos', cantidad]);
+            worksheet.addRow(['Total de elementos', busquedas.length]);
+            worksheet.addRow(['Tipo de filtrado', tipo_filtro]);
+            worksheet.addRow(['Cantidad total', cantidad]);
             worksheet.addRow(['']);
             worksheet.addRow(['Fecha', 'Producto', 'Unidad de medida', 'Cantidad']);
 
@@ -91,7 +99,7 @@ class ReportesExcel {
                 worksheet.addRow([busqueda._id.createdAt, busqueda._id.producto, busqueda._id.unidad, busqueda.cantidad]);    
             });
 
-            worksheet.getRow(4).eachCell((cell) => {
+            worksheet.getRow(5).eachCell((cell) => {
                 cell.font = { bold: true };
             })
 

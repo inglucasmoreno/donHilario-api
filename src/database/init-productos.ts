@@ -1,10 +1,12 @@
 import mongoose from 'mongoose';
 import chalk from 'chalk';
-import data from './mediaRes';
+import dataMediaRes from './mediaRes';
+import dataCerdo from './cerdo';
 
 import UnidadModel from '../models/unidad_medida.model';
 import ProductoModel from '../models/producto.model';
 import MediaResModel from '../models/mediaRes.model';
+import CerdoModel from '../models/cerdo.model';
 
 // Conexion a base de datos
 const bdConnection = async () => {
@@ -28,7 +30,7 @@ const initProductos = async () => {
     const kilogramo = await nuevoKilogramo.save();
     
     // Cortes de Media res
-    data.forEach(async producto => {
+    dataMediaRes.forEach(async producto => {
         
         // Tabla productos
         producto.unidad_medida = kilogramo._id;
@@ -42,6 +44,24 @@ const initProductos = async () => {
             cantidad: producto.cantidad_estandar
         })
         await nuevoElementoRes.save();
+
+    });
+
+    // Cortes de cerdo
+    dataCerdo.forEach(async producto => {
+    
+        // Tabla productos
+        producto.unidad_medida = kilogramo._id;
+        const nuevoProducto = new ProductoModel(producto);
+        const productoDB = await nuevoProducto.save();
+    
+        // Tabla cerdo
+        const nuevoElementoCerdo = new CerdoModel({
+            id_producto: productoDB._id,
+            descripcion: producto.descripcion,
+            cantidad: producto.cantidad_estandar
+        })
+        await nuevoElementoCerdo.save();
 
     });
 
@@ -59,14 +79,23 @@ const initialization = async () => {
 
         console.log(chalk.green('[Equinoccio Technology]') + ' - Inicializacion de productos completada');
 
+        // Unidades de medida creadas
         console.log('');
         console.log(chalk.green('Unidades de medida creadas'));
         console.log('1 - UNIDAD');
         console.log('2 - KILOGRAMO');
-
+        
+        // Productos de media res creados
         console.log('');
-        console.log(chalk.green('Productos creados'));    
-        data.forEach((producto, i) => {
+        console.log(chalk.green('Productos creados - Media Res'));    
+        dataMediaRes.forEach((producto, i) => {
+            console.log((i+1) + ' - ' + producto.descripcion);
+        });
+
+        // Productos de cerdo creados
+        console.log('');
+        console.log(chalk.green('Productos creados - Cerdo'));    
+        dataCerdo.forEach((producto, i) => {
             console.log((i+1) + ' - ' + producto.descripcion);
         });
 
