@@ -13,7 +13,7 @@ const router = express_1.default();
 router.get('/:id', validations_1.validaciones.jwt, proveedores_controllers_1.ProveedoresController.getProveedor);
 // Listar proveedores
 // GET - http://localhost:3000/api/proveedores
-// Parametros: columna | direccion | desde | limit | descripcion | activo
+// Parametros: columna | direccion | descripcion | activo
 router.get('/', validations_1.validaciones.jwt, proveedores_controllers_1.ProveedoresController.listarProveedores);
 // Nuevo proveedor
 // POST - http://localhost:3000/api/proveedores 

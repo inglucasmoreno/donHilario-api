@@ -40,36 +40,14 @@ class Usuarios {
     listarUsuarios(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { columna, direccion, desde, limit, parametro, activo } = req.query;
+                const { columna, direccion } = req.query;
                 // Ordenar
                 let ordenar = [columna || 'apellido', direccion || 1];
-                // Paginacion
-                const pagDesde = Number(desde) || 0;
-                const pagLimit = Number(limit) || 0;
-                // Busqueda
-                let busqueda = activo ? { activo } : {};
-                // Filtro OR
-                let filtroOR = [];
-                const filtroParametro = parametro || '';
-                if (filtroParametro) {
-                    const parametro = new RegExp(filtroParametro, 'i'); // Expresion regular para busqueda insensible
-                    filtroOR.push({ nombre: parametro });
-                    filtroOR.push({ apellido: parametro });
-                    filtroOR.push({ usuario: parametro });
-                }
-                else {
-                    filtroOR.push({});
-                }
                 // Ejecución de consulta
                 const [usuarios, total] = yield Promise.all([
-                    usuarios_model_1.default.find(busqueda, 'usuario apellido nombre role email activo createdAt')
-                        .or(filtroOR)
-                        .sort([ordenar])
-                        .skip(pagDesde)
-                        .limit(pagLimit),
-                    usuarios_model_1.default.find(busqueda)
-                        .or(filtroOR)
-                        .countDocuments()
+                    usuarios_model_1.default.find({}, 'usuario apellido nombre role email activo createdAt')
+                        .sort([ordenar]),
+                    usuarios_model_1.default.find().countDocuments()
                 ]);
                 response_1.respuesta.success(res, { usuarios, total });
             }

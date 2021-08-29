@@ -22,6 +22,12 @@ const proveedorSchema = new mongoose_1.Schema({
         uppercase: true,
         default: 'SIN DOMICILIO'
     },
+    telefono: {
+        type: String,
+        trim: true,
+        uppercase: true,
+        default: 'SIN TELEFONO'
+    },
     condicion_iva: {
         type: String,
         trim: true,

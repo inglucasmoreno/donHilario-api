@@ -3,7 +3,7 @@ import mongoose, { Schema, model } from 'mongoose';
 // Interfaz - Produccion interna
 export interface I_ProduccionInterna extends mongoose.Document {
     producto_entrada: Schema.Types.ObjectId,
-    producto_salida: String,
+    producto_salida: Schema.Types.ObjectId,
     cantidad: String,
     usuario_creacion: String,
     activo: Boolean,
@@ -19,10 +19,9 @@ const produccionInternaSchema = new Schema({
     },
 
     producto_salida: {
-        type: String,
-        trim: true,
-        uppercase: true,
-        required: 'El producto de salida es obligatorio'
+        type: Schema.Types.ObjectId,
+        required: 'El producto de salida es obligatorio',
+        ref: 'producto'
     },
 
     cantidad_entrada: {

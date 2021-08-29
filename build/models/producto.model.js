@@ -9,6 +9,11 @@ const productoSchema = new mongoose_1.Schema({
         uppercase: true,
         require: 'El codigo es un valor obligatorio'
     },
+    tipo: {
+        type: String,
+        trim: true,
+        required: 'El tipo de producto es obligatorio'
+    },
     descripcion: {
         type: String,
         trim: true,
@@ -33,14 +38,36 @@ const productoSchema = new mongoose_1.Schema({
     },
     cantidad_minima: {
         type: Number,
-        required: 'La cantidad minima es un campo obligatorio',
         default: 0,
+        min: 0
+    },
+    porcentaje_ganancia: {
+        type: Number,
+        default: 1,
+        min: 1
+    },
+    precio_costo: {
+        type: Number,
+        required: 'El precio de costo es un campo obligatorio',
         min: 0
     },
     precio: {
         type: Number,
         required: 'El precio es un campo obligatorio',
         min: 0
+    },
+    precio_promocion: {
+        type: Number,
+        default: 0,
+        min: 0
+    },
+    promocion: {
+        type: Boolean,
+        default: false
+    },
+    carne: {
+        type: Boolean,
+        default: false
     },
     activo: {
         type: Boolean,

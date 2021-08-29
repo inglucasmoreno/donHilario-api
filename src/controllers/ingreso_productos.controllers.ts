@@ -7,6 +7,7 @@ import ProductoModel from '../models/producto.model';
 import UsuarioModel from '../models/usuarios.model';
 import MediaResModel from '../models/mediaRes.model';
 import CerdoModel from '../models/cerdo.model';
+import PolloModel from '../models/pollo.model';
 import IngresoProductoModel, { I_IngresoProducto } from '../models/ingreso_productos.model';
 import mongoose from 'mongoose';
 
@@ -146,6 +147,52 @@ class IngresoProducto {
                 for(let producto of productos){
                     if(String(producto.id_producto) === String(prodIngreso.producto)) {
                         return respuesta.error(res, 400, 'Corte de cerdo repetido');
+                    } 
+                }
+            }
+
+            // Ingreso de productos
+            productos.forEach( async producto => {
+                const nuevoProducto = new IngresoProductoModel({
+                    activo: true,
+                    ingreso: idIngreso,
+                    producto: producto.id_producto,
+                    proveedor,
+                    cantidad: Number((producto.cantidad * cantidad).toFixed(2)),
+                    usuario_creacion
+                });
+                await nuevoProducto.save();
+            });
+
+            respuesta.success(res, 'Cerdo cargado');
+
+        }catch(err){
+            console.log(chalk.red(err));
+            respuesta.error(res, 500);
+        }
+    }
+
+     // Metodo: Nuevo pollo
+     public async nuevoPollo(req: any, res: Response){
+        try{
+
+            const uid = req.uid;
+            const {idIngreso, cantidad, proveedor} = req.body;
+
+            // Se traen los productos del pollo
+            const productos: any[] = await PolloModel.find();
+
+            // Se buscan los datos del usuario logueado
+            const usuarioLogin = await UsuarioModel.findById(uid, 'apellido nombre');
+            const usuario_creacion = usuarioLogin.apellido + ' ' + usuarioLogin.nombre;
+
+            // Se verifica si ya hay un corte de pollo cargado
+            const productosIngreso = await IngresoProductoModel.find({ ingreso: idIngreso });
+            
+            for(let prodIngreso of productosIngreso){
+                for(let producto of productos){
+                    if(String(producto.id_producto) === String(prodIngreso.producto)) {
+                        return respuesta.error(res, 400, 'Corte de pollo repetido');
                     } 
                 }
             }

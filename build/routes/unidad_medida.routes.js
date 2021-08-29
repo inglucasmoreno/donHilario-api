@@ -13,7 +13,7 @@ const router = express_1.default();
 router.get('/:id', validations_1.validaciones.jwt, unidad_medida_controllers_1.UnidadMedidaController.getUnidad);
 // Listar unidades de medida
 // GET - http://localhost:3000/api/unidad_medida
-// Parametros: columna | direccion | desde | limit | descripcion | activo
+// Parametros: columna | direccion | descripcion | activo
 router.get('/', validations_1.validaciones.jwt, unidad_medida_controllers_1.UnidadMedidaController.listarUnidades);
 //Nueva unidad de medida 
 // POST - http://localhost:3000/api/unidad_medida

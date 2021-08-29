@@ -60,32 +60,15 @@ class UnidadMedida {
     listarUnidades(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { activo, descripcion } = req.query;
-                // 1) - Ordenar
+                const { activo } = req.query;
+                // Ordenar
                 let ordenar = [req.query.columna || 'descripcion', req.query.direccion || 1];
-                // 2) - Paginación
-                const desde = Number(req.query.desde) || 0;
-                const limit = Number(req.query.limit) || 0;
-                // 3) - Filtrado            
+                // Filtrado            
                 let busqueda = activo ? { activo } : {};
-                let filtroOR = [];
-                // Filtrado activo
-                const filtroDescripcion = descripcion || '';
-                // Filtrado OR
-                if (filtroDescripcion) {
-                    const iDescripcion = new RegExp(filtroDescripcion, 'i'); // Expresion regular para busqueda insensible
-                    filtroOR.push({ descripcion: iDescripcion });
-                }
-                else {
-                    filtroOR.push({});
-                }
                 // Respuesta
                 const [unidades, total] = yield Promise.all([
                     unidad_medida_model_1.default.find(busqueda)
-                        .or(filtroOR)
-                        .sort([ordenar])
-                        .skip(desde)
-                        .limit(limit),
+                        .sort([ordenar]),
                     unidad_medida_model_1.default.find(busqueda).countDocuments()
                 ]);
                 response_1.respuesta.success(res, { unidades, total });

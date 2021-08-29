@@ -16,6 +16,7 @@ exports.ProveedoresController = void 0;
 const chalk_1 = __importDefault(require("chalk"));
 const response_1 = require("../helpers/response");
 const proveedor_model_1 = __importDefault(require("../models/proveedor.model"));
+const ingreso_model_1 = __importDefault(require("../models/ingreso.model"));
 class Proveedores {
     // Metodo: Obtener proveedor por ID
     getProveedor(req, res) {
@@ -39,9 +40,6 @@ class Proveedores {
             try {
                 // Ordenar
                 let ordenar = [req.query.columna || 'razon_social', req.query.direccion || 1];
-                // Paginación
-                const desde = Number(req.query.desde) || 0;
-                const limit = Number(req.query.limit) || 0;
                 // Filtrado
                 const busqueda = {};
                 let filtroOR = [];
@@ -62,9 +60,7 @@ class Proveedores {
                 const [proveedores, total] = yield Promise.all([
                     proveedor_model_1.default.find(busqueda)
                         .or(filtroOR)
-                        .sort([ordenar])
-                        .skip(desde)
-                        .limit(limit),
+                        .sort([ordenar]),
                     proveedor_model_1.default.find(busqueda)
                         .or(filtroOR)
                         .countDocuments()
@@ -102,7 +98,7 @@ class Proveedores {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const id = req.params.id;
-                const { cuit } = req.body;
+                const { cuit, activo } = req.body;
                 // Se verifica si el proveedor a actualizar existe
                 const dbProveedor = yield proveedor_model_1.default.findById(id);
                 if (!dbProveedor)
@@ -114,6 +110,13 @@ class Proveedores {
                         if (cuitExiste)
                             return response_1.respuesta.error(res, 400, 'El CUIT ya esta registrado');
                     }
+                }
+                // Se verifica si se va a dar de baja al proveedor
+                if (!activo) {
+                    // Se verifica si un ingreso activo esta utilizando el proveedor
+                    const proveedorUtilizado = yield ingreso_model_1.default.find({ proveedor: id, activo: true });
+                    if (proveedorUtilizado.length > 0)
+                        return response_1.respuesta.error(res, 400, 'El proveedor esta asociado a un ingreso activo');
                 }
                 const proveedor = yield proveedor_model_1.default.findByIdAndUpdate(id, req.body, { new: true });
                 response_1.respuesta.success(res, { proveedor });

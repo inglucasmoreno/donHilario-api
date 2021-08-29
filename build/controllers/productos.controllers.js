@@ -52,39 +52,40 @@ class Producto {
             }
         });
     }
+    // Metodo: producto por Codigo
+    productoPorCodigo(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { codigo } = req.params;
+                let producto;
+                // Busqueda dentro de productos normales
+                producto = yield producto_model_1.default.findOne({ codigo })
+                    .populate('unidad_medida', 'descripcion');
+                if (!producto) {
+                    // Busqueda dentro de productos de balanza
+                    const codigoBalanza = codigo.slice(0, 7);
+                    producto = yield producto_model_1.default.findOne({ codigo: codigoBalanza })
+                        .populate('unidad_medida', 'descripcion');
+                    // No se encontro el producto
+                    if (!producto) {
+                        return response_1.respuesta.error(res, 400, 'El producto no existe');
+                    }
+                }
+                response_1.respuesta.success(res, { producto });
+            }
+            catch (err) {
+                console.log(chalk_1.default.red(err));
+                response_1.respuesta.error(res, 500);
+            }
+        });
+    }
     // Metodo: Listar productos
     listarProductos(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // Busqueda para calculo del total
-                const busqueda = {};
                 // Pipeline para agregacion
                 let pipeline = [];
-                // Etapa 1 - Filtrado por codigo
-                if (req.query.codigo) {
-                    const regex = new RegExp(req.query.codigo, 'i'); // Expresion regular para busqueda insensible
-                    pipeline.push({ $match: { codigo: regex } });
-                    busqueda['codigo'] = regex;
-                }
-                // Etapa 2 - Filtrado por descripcion o codigo
-                let filtroCodigo = {};
-                let filtroDescripcion = {};
-                if (req.query.descripcion) {
-                    const regex = new RegExp(req.query.descripcion, 'i'); // Expresion regular para busqueda insensible
-                    pipeline.push({ $match: { $or: [{ descripcion: regex }, { codigo: regex }] } });
-                    filtroCodigo = { codigo: regex };
-                    filtroDescripcion = { descripcion: regex };
-                }
-                // Etapa 3 - Filtrado por activo/inactivo
-                if (req.query.activo == 'true') {
-                    pipeline.push({ $match: { activo: true } });
-                    busqueda['activo'] = true;
-                }
-                else if (req.query.activo == 'false') {
-                    pipeline.push({ $match: { activo: false } });
-                    busqueda['activo'] = false;
-                }
-                // Etapa 4 - Join (Unidad de medida)     
+                // Join (Unidad de medida)     
                 pipeline.push({ $lookup: {
                         from: 'unidad_medida',
                         localField: 'unidad_medida',
@@ -92,25 +93,16 @@ class Producto {
                         as: 'unidad_medida'
                     } });
                 pipeline.push({ $unwind: '$unidad_medida' });
-                // Etapa 5 - Ordenando datos
+                // Ordenando datos
                 const ordenar = {};
                 if (req.query.columna) {
                     ordenar[req.query.columna] = Number(req.query.direccion);
                     pipeline.push({ $sort: ordenar });
                 }
-                // Etapa 6 -  Paginación
-                const desde = req.query.desde ? Number(req.query.desde) : 0;
-                const limit = req.query.limit ? Number(req.query.limit) : 0;
-                if (limit != 0)
-                    pipeline.push({ $limit: limit });
-                pipeline.push({ $skip: desde });
                 // Se obtienen los datos
                 const [productos, total] = yield Promise.all([
                     producto_model_1.default.aggregate(pipeline),
-                    producto_model_1.default.find(busqueda)
-                        .or(filtroCodigo)
-                        .or(filtroDescripcion)
-                        .countDocuments()
+                    producto_model_1.default.find().countDocuments()
                 ]);
                 response_1.respuesta.success(res, { productos, total });
             }

@@ -13,7 +13,7 @@ const router = express_1.default();
 router.get('/:id', validations_1.validaciones.jwt, usuarios_controllers_1.UsuariosController.getUsuario);
 // Listar usuarios
 // GET - http://localhost:3000/api/usuarios
-// Parametros: columna | direccion | desde | limit | parametro | activo
+// Parametros: columna | direccion
 router.get('/', validations_1.validaciones.jwt, usuarios_controllers_1.UsuariosController.listarUsuarios);
 // Nuevo usuario
 // POST - http://localhost:3000/api/usuarios 

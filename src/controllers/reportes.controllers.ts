@@ -8,6 +8,7 @@ import OtrosIngresosModel from '../models/otros_ingresos.model';
 import OtrosGastosModel from '../models/otros_gastos.model';
 import VentaProductoModel from '../models/venta_productos.model';
 import IngresoProductoModel from '../models/ingreso_productos.model';
+import { format, add } from 'date-fns';
 import mongoose from 'mongoose';
 
 class Reportes {
@@ -42,6 +43,8 @@ class Reportes {
                 pipeline.push({ $match: { mayorista: mongoose.Types.ObjectId(mayoristaSeleccionado) }});
             }
 
+            const fechaHastaNew = add(new Date(fechaHasta), { days: 1 });
+
             // Filtro: fechas [Desde - Hasta]
             if(fechaDesde){
                 pipeline.push({$match: { createdAt: { $gte: new Date(fechaDesde) } }});
@@ -49,8 +52,8 @@ class Reportes {
             }
     
             if(fechaHasta){
-                pipeline.push({$match: { createdAt: { $lte: new Date(fechaHasta) } }});
-                pipelineOtros.push({$match: { createdAt: { $lte: new Date(fechaHasta) } }});    
+                pipeline.push({$match: { createdAt: { $lte: new Date(fechaHastaNew) } }});
+                pipelineOtros.push({$match: { createdAt: { $lte: new Date(fechaHastaNew) } }});    
             }
 
             // Ordenando datos
@@ -89,9 +92,11 @@ class Reportes {
             // Filtro: Todas los productos vendidos
             pipeline.push({ $match: { }});
 
+            const fechaHastaNew = add(new Date(fechaHasta), { days: 1 });
+
             // Filtro: fechas [Desde - Hasta]
             if(fechaDesde) pipeline.push({$match: { createdAt: { $gte: new Date(fechaDesde) } }});
-            if(fechaHasta) pipeline.push({$match: { createdAt: { $lte: new Date(fechaHasta) } }});
+            if(fechaHasta) pipeline.push({$match: { createdAt: { $lte: new Date(fechaHastaNew) } }});
             
             // Filtro: Proveedor
             if(tipo_filtro === 'Ingresos' && proveedorSeleccionado !== ''){
@@ -193,11 +198,31 @@ class Reportes {
     // Cantidades vs Desechos
     public async cantidadesDesechos(req: Request, res: Response) {
         try{
+            
             const {fechaDesde, fechaHasta} = req.body;
+            
+            const pipelineDesechos = [];
+            const pipelineVentas = [];
+
+            // Filtro: Todas los productos vendidos
+            pipelineDesechos.push({ $match: {}});
+            pipelineVentas.push({ $match: { carne: true }});
+
+            const fechaHastaNew = add(new Date(fechaHasta), { days: 1 });
+      
+            // Filtro: fechas [Desde - Hasta]
+            if(fechaDesde) pipelineDesechos.push({$match: { createdAt: { $gte: new Date(fechaDesde) } }});
+            if(fechaHasta) pipelineDesechos.push({$match: { createdAt: { $lte: new Date(fechaHastaNew) } }});
+            
+            if(fechaDesde) pipelineVentas.push({$match: { createdAt: { $gte: new Date(fechaDesde) } }});
+            if(fechaHasta) pipelineVentas.push({$match: { createdAt: { $lte: new Date(fechaHastaNew) } }});
+            
+            const desechos: any[] = await DesechosModel.aggregate(pipelineDesechos);
+            const productos: any[] = await VentaProductosModel.aggregate(pipelineVentas);
 
             // Consulta a base de datos
-            const desechos: any[] = await DesechosModel.find({createdAt: { $gte: new Date(fechaDesde), $lte: new Date(fechaHasta) }});
-            const productos: any[] = await VentaProductosModel.find({$and: [{createdAt: { $gte: new Date(fechaDesde), $lte: new Date(fechaHasta)}}, {carne: true}]});
+            // const desechos: any[] = await DesechosModel.find({createdAt: { $gte: new Date(fechaDesde), $lte: new Date(fechaHastaNew) }});
+            // const productos: any[] = await VentaProductosModel.find({$and: [{createdAt: { $gte: new Date(fechaDesde), $lte: new Date(fechaHastaNew)}}, {carne: true}]});
 
             let desechosTotal = 0;
             let cantidadTotal = 0;
