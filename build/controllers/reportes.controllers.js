@@ -187,10 +187,26 @@ class Reportes {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { fechaDesde, fechaHasta } = req.body;
+                const pipelineDesechos = [];
+                const pipelineVentas = [];
+                // Filtro: Todas los productos vendidos
+                pipelineDesechos.push({ $match: {} });
+                pipelineVentas.push({ $match: { carne: true } });
                 const fechaHastaNew = date_fns_1.add(new Date(fechaHasta), { days: 1 });
+                // Filtro: fechas [Desde - Hasta]
+                if (fechaDesde)
+                    pipelineDesechos.push({ $match: { createdAt: { $gte: new Date(fechaDesde) } } });
+                if (fechaHasta)
+                    pipelineDesechos.push({ $match: { createdAt: { $lte: new Date(fechaHastaNew) } } });
+                if (fechaDesde)
+                    pipelineVentas.push({ $match: { createdAt: { $gte: new Date(fechaDesde) } } });
+                if (fechaHasta)
+                    pipelineVentas.push({ $match: { createdAt: { $lte: new Date(fechaHastaNew) } } });
+                const desechos = yield desechos_model_1.default.aggregate(pipelineDesechos);
+                const productos = yield venta_productos_model_1.default.aggregate(pipelineVentas);
                 // Consulta a base de datos
-                const desechos = yield desechos_model_1.default.find({ createdAt: { $gte: new Date(fechaDesde), $lte: new Date(fechaHastaNew) } });
-                const productos = yield venta_productos_model_1.default.find({ $and: [{ createdAt: { $gte: new Date(fechaDesde), $lte: new Date(fechaHastaNew) } }, { carne: true }] });
+                // const desechos: any[] = await DesechosModel.find({createdAt: { $gte: new Date(fechaDesde), $lte: new Date(fechaHastaNew) }});
+                // const productos: any[] = await VentaProductosModel.find({$and: [{createdAt: { $gte: new Date(fechaDesde), $lte: new Date(fechaHastaNew)}}, {carne: true}]});
                 let desechosTotal = 0;
                 let cantidadTotal = 0;
                 // Se calculan los totales
