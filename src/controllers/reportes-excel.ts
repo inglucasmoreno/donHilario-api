@@ -101,7 +101,7 @@ class ReportesExcel {
 
             worksheet.getRow(5).eachCell((cell) => {
                 cell.font = { bold: true };
-            })
+            });
 
             const nombreReporte = '../reportes/productos/productos.xlsx';
 
