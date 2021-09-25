@@ -145,9 +145,14 @@ class Caja {
                 monedas: req.body.billetes.cantidad_monedas || 0
             }
             
+            // Se actualiza el saldo inicial de proxima caja
+            const saldoDB: I_SaldoInicial[] = await saldoInicialModel.find();
+            await saldoInicialModel.findByIdAndUpdate(saldoDB[0]._id, { monto: req.body.saldo_proxima_caja });  
+
             // Se deshabilitan las ventas actuales luego del cierre de caja
             await VentasModel.updateMany({activo: true}, {activo: false});
 
+            // Saldos en billetes
             const nuevosBilletes = new BilletesModel(dataBilletes);
             await nuevosBilletes.save();
 

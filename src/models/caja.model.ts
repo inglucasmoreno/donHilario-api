@@ -13,6 +13,8 @@ export interface I_Caja extends mongoose.Document {
     total_ventas: Number,
     otros_ingresos: Number,    
     otros_gastos: Number,
+    tesoreria: Number,
+    saldo_proxima_caja: Number,
     usuario_creacion: String,
     activo: Boolean,
 };
@@ -106,6 +108,16 @@ const cajaSchema = new Schema({
         type: Number,
         min: 0,
         require: 'Otros gastos es un valor obligatorio'       
+    },
+
+    tesoreria: {
+        type: Number,
+        default: 0       
+    },
+
+    saldo_proxima_caja: {
+        type: Number,
+        require: 'El saldo de proxima caja es obligatorio'      
     },
 
     usuario_creacion: {
