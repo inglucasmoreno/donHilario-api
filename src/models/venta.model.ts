@@ -6,6 +6,7 @@ export interface I_Venta extends mongoose.Document {
     total_balanza: Number,
     total_mercaderia: Number,
     forma_pago: String,
+    forma_pago_personalizada: [{ tipo: String, monto: Number }],
     total_adicional_credito: Number,
     total_descuento: Number,
     venta_mayorista: Boolean,
@@ -36,6 +37,10 @@ const ventaSchema = new Schema({
         trim: true,
         require: 'La forma de pago es un campo obligatorio'      
     },
+    forma_pago_personalizada: [{
+        tipo: String,
+        monto: Number
+    }],
     total_adicional_credito: { 
         type: Number,
         trim: true,

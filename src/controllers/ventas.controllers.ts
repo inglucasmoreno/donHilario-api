@@ -32,9 +32,12 @@ class Ventas {
             let ordenar = [columna || 'createdAt', direccion || -1];    
             
             // Se listan las ventas
-            const ventas: I_Venta = await VentaModel.find({ activo }).sort([ordenar]);
-            
-            respuesta.success(res, { ventas });
+            const [ventas, personalizadas] = await Promise.all([
+                VentaModel.find({ activo }).sort([ordenar]),
+                VentaModel.find({ activo,  forma_pago: 'Personalizada'}).sort([ordenar])
+            ]);
+
+            respuesta.success(res, { ventas, personalizadas });
 
         }catch(err){
             console.log(chalk.red(err));
@@ -50,6 +53,7 @@ class Ventas {
             const { precio_total, 
                     descuento_porcentual, 
                     forma_pago, 
+                    forma_pago_personalizada,
                     total_balanza, 
                     total_mercaderia, 
                     total_adicional_credito,
@@ -70,6 +74,7 @@ class Ventas {
             const data = { 
                 descuento_porcentual,
                 forma_pago,
+                forma_pago_personalizada,
                 total_balanza,
                 precio_total,
                 total_mercaderia,
