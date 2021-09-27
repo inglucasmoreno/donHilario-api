@@ -1,5 +1,5 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
+var __importDefault = (this && this.__importDefault) || function(mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -12,13 +12,12 @@ class Jwt {
         return new Promise((resolve, reject) => {
             const payload = { uid };
             jsonwebtoken_1.default.sign(payload, process.env.JWT_SECRET || 'EquinoccioKey', {
-                expiresIn: '5h'
+                expiresIn: '200h'
             }, (err, token) => {
                 if (err) {
                     console.log(chalk_1.default.red(err));
                     reject('No se pudo generar el token');
-                }
-                else {
+                } else {
                     resolve(token);
                 }
             });
