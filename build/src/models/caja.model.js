@@ -77,6 +77,14 @@ const cajaSchema = new mongoose_1.Schema({
         min: 0,
         require: 'Otros gastos es un valor obligatorio'
     },
+    tesoreria: {
+        type: Number,
+        default: 0
+    },
+    saldo_proxima_caja: {
+        type: Number,
+        require: 'El saldo de proxima caja es obligatorio'
+    },
     usuario_creacion: {
         type: String,
         trim: true,

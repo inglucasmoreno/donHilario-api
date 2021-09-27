@@ -24,6 +24,10 @@ const ventaSchema = new mongoose_1.Schema({
         trim: true,
         require: 'La forma de pago es un campo obligatorio'
     },
+    forma_pago_personalizada: [{
+            tipo: String,
+            monto: Number
+        }],
     total_adicional_credito: {
         type: Number,
         trim: true,

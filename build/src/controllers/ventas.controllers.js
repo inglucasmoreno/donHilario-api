@@ -42,8 +42,11 @@ class Ventas {
                 // Ordenar
                 let ordenar = [columna || 'createdAt', direccion || -1];
                 // Se listan las ventas
-                const ventas = yield venta_model_1.default.find({ activo }).sort([ordenar]);
-                response_1.respuesta.success(res, { ventas });
+                const [ventas, personalizadas] = yield Promise.all([
+                    venta_model_1.default.find({ activo }).sort([ordenar]),
+                    venta_model_1.default.find({ activo, forma_pago: 'Personalizada' }).sort([ordenar])
+                ]);
+                response_1.respuesta.success(res, { ventas, personalizadas });
             }
             catch (err) {
                 console.log(chalk_1.default.red(err));
@@ -56,7 +59,7 @@ class Ventas {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { uid } = req;
-                const { precio_total, descuento_porcentual, forma_pago, total_balanza, total_mercaderia, total_adicional_credito, venta_mayorista, mayorista, total_descuento } = req.body;
+                const { precio_total, descuento_porcentual, forma_pago, forma_pago_personalizada, total_balanza, total_mercaderia, total_adicional_credito, venta_mayorista, mayorista, total_descuento } = req.body;
                 // Recepcion de productos
                 const productos = req.body.productos;
                 // Se agregar el usuario creador a la data
@@ -67,6 +70,7 @@ class Ventas {
                 const data = {
                     descuento_porcentual,
                     forma_pago,
+                    forma_pago_personalizada,
                     total_balanza,
                     precio_total,
                     total_mercaderia,

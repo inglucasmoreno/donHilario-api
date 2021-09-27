@@ -35,6 +35,7 @@ const otros_gastos_routes_1 = __importDefault(require("./routes/otros_gastos.rou
 const reportes_routes_1 = __importDefault(require("./routes/reportes.routes"));
 const caja_routes_1 = __importDefault(require("./routes/caja.routes"));
 const reportes_excel_routes_1 = __importDefault(require("./routes/reportes_excel.routes"));
+const tmp_ingresos_gastos_routes_1 = __importDefault(require("./routes/tmp_ingresos_gastos.routes"));
 // [Express]
 const app = express_1.default();
 app.set('PORT', process.env.PORT || 3000);
@@ -64,6 +65,7 @@ app.use('/api/otros_ingresos', otros_ingresos_routes_1.default);
 app.use('/api/reportes', reportes_routes_1.default);
 app.use('/api/reportes-excel', reportes_excel_routes_1.default);
 app.use('/api/cajas', caja_routes_1.default);
+app.use('/api/tmp-ingresos-gastos', tmp_ingresos_gastos_routes_1.default);
 // [Necesario para no perder las rutas en produccion]
 app.get('*', (req, res) => {
     res.sendFile(path_1.default.resolve(__dirname, 'public/index.html'));

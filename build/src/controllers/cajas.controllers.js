@@ -147,8 +147,12 @@ class Caja {
                     mil: req.body.billetes.cantidad_1000 || 0,
                     monedas: req.body.billetes.cantidad_monedas || 0
                 };
+                // Se actualiza el saldo inicial de proxima caja
+                const saldoDB = yield saldo_inicial_model_1.default.find();
+                yield saldo_inicial_model_1.default.findByIdAndUpdate(saldoDB[0]._id, { monto: req.body.saldo_proxima_caja });
                 // Se deshabilitan las ventas actuales luego del cierre de caja
                 yield venta_model_1.default.updateMany({ activo: true }, { activo: false });
+                // Saldos en billetes
                 const nuevosBilletes = new billetes_model_1.default(dataBilletes);
                 yield nuevosBilletes.save();
                 response_1.respuesta.success(res, 'Cierre de caja completado');
