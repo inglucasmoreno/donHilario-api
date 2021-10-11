@@ -59,7 +59,7 @@ class Ventas {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { uid } = req;
-                const { precio_total, descuento_porcentual, forma_pago, forma_pago_personalizada, total_balanza, total_mercaderia, total_adicional_credito, venta_mayorista, mayorista, total_descuento } = req.body;
+                const { precio_total, descuento_porcentual, forma_pago, usuario_cuenta_corriente, forma_pago_personalizada, total_balanza, total_anulacion_balanza, total_mercaderia, total_adicional_credito, venta_mayorista, mayorista, total_descuento } = req.body;
                 // Recepcion de productos
                 const productos = req.body.productos;
                 // Se agregar el usuario creador a la data
@@ -70,8 +70,10 @@ class Ventas {
                 const data = {
                     descuento_porcentual,
                     forma_pago,
+                    usuario_cuenta_corriente,
                     forma_pago_personalizada,
                     total_balanza,
+                    total_anulacion_balanza,
                     precio_total,
                     total_mercaderia,
                     total_adicional_credito,
@@ -99,10 +101,12 @@ class Ventas {
                     // Se agrega el producto a la venta
                     const productoTemp = new venta_productos_model_1.default(data);
                     yield productoTemp.save();
-                    // Se impacta sobre el stock
-                    const productoDB = yield producto_model_1.default.findById(elemento.producto);
-                    const nuevaCantidad = productoDB.cantidad - elemento.cantidad;
-                    yield producto_model_1.default.findByIdAndUpdate(elemento.producto, { cantidad: nuevaCantidad });
+                    // Se impacta sobre el stock si es necesario
+                    if (forma_pago !== 'Anulacion balanza') {
+                        const productoDB = yield producto_model_1.default.findById(elemento.producto);
+                        const nuevaCantidad = productoDB.cantidad - elemento.cantidad;
+                        yield producto_model_1.default.findByIdAndUpdate(elemento.producto, { cantidad: nuevaCantidad });
+                    }
                 }));
                 response_1.respuesta.success(res, { venta });
             }

@@ -53,8 +53,10 @@ class Ventas {
             const { precio_total, 
                     descuento_porcentual, 
                     forma_pago, 
+                    usuario_cuenta_corriente,
                     forma_pago_personalizada,
                     total_balanza, 
+                    total_anulacion_balanza,
                     total_mercaderia, 
                     total_adicional_credito,
                     venta_mayorista,
@@ -74,8 +76,10 @@ class Ventas {
             const data = { 
                 descuento_porcentual,
                 forma_pago,
+                usuario_cuenta_corriente,
                 forma_pago_personalizada,
                 total_balanza,
+                total_anulacion_balanza,
                 precio_total,
                 total_mercaderia,
                 total_adicional_credito,
@@ -108,10 +112,12 @@ class Ventas {
                 await productoTemp.save();
             
 
-                // Se impacta sobre el stock
-                const productoDB: any = await ProductoModel.findById(elemento.producto);
-                const nuevaCantidad: number = productoDB.cantidad - elemento.cantidad;  
-                await ProductoModel.findByIdAndUpdate(elemento.producto, { cantidad: nuevaCantidad });
+                // Se impacta sobre el stock si es necesario
+                if(forma_pago !== 'Anulacion balanza'){
+                    const productoDB: any = await ProductoModel.findById(elemento.producto);
+                    const nuevaCantidad: number = productoDB.cantidad - elemento.cantidad;  
+                    await ProductoModel.findByIdAndUpdate(elemento.producto, { cantidad: nuevaCantidad });
+                }
             
             });
 

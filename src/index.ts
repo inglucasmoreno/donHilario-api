@@ -33,6 +33,7 @@ import ReportesRoutes from './routes/reportes.routes';
 import CajasRoutes from './routes/caja.routes';
 import ReportesExcelRoutes from './routes/reportes_excel.routes';
 import TmpIngresosGastosRoutes from './routes/tmp_ingresos_gastos.routes';
+import CuentaCorrienteRoutes from './routes/cuenta_corriente.routes';
 
 // [Express]
 const app = express();
@@ -66,6 +67,7 @@ app.use('/api/reportes', ReportesRoutes);
 app.use('/api/reportes-excel', ReportesExcelRoutes);
 app.use('/api/cajas', CajasRoutes);
 app.use('/api/tmp-ingresos-gastos', TmpIngresosGastosRoutes);
+app.use('/api/cuenta_corriente', CuentaCorrienteRoutes);
 
 // [Necesario para no perder las rutas en produccion]
 app.get('*', (req, res) => {

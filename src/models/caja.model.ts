@@ -4,12 +4,18 @@ import mongoose, { Schema, model } from 'mongoose';
 export interface I_Caja extends mongoose.Document {
     saldo_inicial: Number,
     total_balanza: Number,
+    total_anulacion_balanza: Number,
     total_mercaderia: Number,
+    total_adicional_credito: Number,
     total_descuento: Number,
     total_efectivo: Number,
     total_efectivo_real: Number,
     diferencia: Number,
     total_postnet: Number,
+    total_debito: Number,
+    total_mercadopago: Number,
+    total_cuenta_corriente: Number,
+    total_credito: Number,
     total_ventas: Number,
     otros_ingresos: Number,    
     otros_gastos: Number,
@@ -32,6 +38,11 @@ const cajaSchema = new Schema({
         type: Number,
         min: 0,
         require: 'El total de balanza es un valor obligatorio'
+    },
+
+    total_anulacion_balanza: {
+        type: Number,
+        require: 'El total anulacion balanza es un campo obligatorio'
     },
 
     total_mercaderia: {
@@ -84,6 +95,12 @@ const cajaSchema = new Schema({
         type: Number,
         min: 0,
         require: 'El total en mercadopago es un valor obligatorio'
+    },
+
+    total_cuenta_corriente: {
+        type: Number,
+        min: 0,
+        default: 0
     },
 
     total_credito: {

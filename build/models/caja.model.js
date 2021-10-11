@@ -14,6 +14,10 @@ const cajaSchema = new mongoose_1.Schema({
         min: 0,
         require: 'El total de balanza es un valor obligatorio'
     },
+    total_anulacion_balanza: {
+        type: Number,
+        require: 'El total anulacion balanza es un campo obligatorio'
+    },
     total_mercaderia: {
         type: Number,
         min: 0,
@@ -56,6 +60,11 @@ const cajaSchema = new mongoose_1.Schema({
         type: Number,
         min: 0,
         require: 'El total en mercadopago es un valor obligatorio'
+    },
+    total_cuenta_corriente: {
+        type: Number,
+        min: 0,
+        default: 0
     },
     total_credito: {
         type: Number,

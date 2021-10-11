@@ -6,17 +6,14 @@ const mongoose_1 = require("mongoose");
 const ventaSchema = new mongoose_1.Schema({
     precio_total: {
         type: Number,
-        trim: true,
         require: 'El precio total es un campo obligatorio'
     },
     total_balanza: {
         type: Number,
-        trim: true,
         require: 'El total de balanza es un campo obligatorio'
     },
     total_mercaderia: {
         type: Number,
-        trim: true,
         require: 'El total de mercaderia es un campo obligatorio'
     },
     forma_pago: {
@@ -24,18 +21,21 @@ const ventaSchema = new mongoose_1.Schema({
         trim: true,
         require: 'La forma de pago es un campo obligatorio'
     },
+    usuario_cuenta_corriente: {
+        type: String,
+        trim: true,
+        default: ''
+    },
     forma_pago_personalizada: [{
             tipo: String,
             monto: Number
         }],
     total_adicional_credito: {
         type: Number,
-        trim: true,
         default: 0
     },
     total_descuento: {
         type: Number,
-        trim: true,
         default: 0
     },
     venta_mayorista: {
