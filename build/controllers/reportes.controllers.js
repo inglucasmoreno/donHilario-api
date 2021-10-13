@@ -140,6 +140,8 @@ class Reportes {
                         }
                     });
                     pipeline.push({ $unwind: '$venta' });
+                    // No se consideran las anulaciones de balanza
+                    pipeline.push({ $match: { 'venta.forma_pago': { $nin: ['Anulacion balanza'] } } });
                 }
                 // Filtro: Mayoristas
                 // Egresos sin mayoristas
@@ -154,7 +156,7 @@ class Reportes {
                 if (tipo_filtro === 'Egresos' && tipo_egreso === 'solo_mayoristas' && mayoristaSeleccionado !== '') {
                     pipeline.push({ $match: { 'venta.mayorista': mongoose_1.default.Types.ObjectId(mayoristaSeleccionado) } });
                 }
-                // GROUP
+                // GROUP      
                 pipeline.push({
                     $group: {
                         _id: { createdAt: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } }, tipo: '$producto.tipo', producto: '$producto.descripcion', unidad: '$producto.unidad_medida.descripcion' },
@@ -191,7 +193,7 @@ class Reportes {
                 const pipelineVentas = [];
                 // Filtro: Todas los productos vendidos
                 pipelineDesechos.push({ $match: {} });
-                pipelineVentas.push({ $match: { carne: true } });
+                pipelineVentas.push({ $match: { carne: true, } });
                 const fechaHastaNew = date_fns_1.add(new Date(fechaHasta), { days: 1 });
                 // Filtro: fechas [Desde - Hasta]
                 if (fechaDesde)
@@ -199,9 +201,18 @@ class Reportes {
                 if (fechaHasta)
                     pipelineDesechos.push({ $match: { createdAt: { $lte: new Date(fechaHastaNew) } } });
                 if (fechaDesde)
-                    pipelineVentas.push({ $match: { createdAt: { $gte: new Date(fechaDesde) } } });
+                    pipelineVentas.push({ $match: { createdAt: { $gte: new Date(fechaDesde) }, } });
                 if (fechaHasta)
                     pipelineVentas.push({ $match: { createdAt: { $lte: new Date(fechaHastaNew) } } });
+                // Join (Venta)     
+                pipelineVentas.push({ $lookup: {
+                        from: 'ventas',
+                        localField: 'venta',
+                        foreignField: '_id',
+                        as: 'venta'
+                    } });
+                pipelineVentas.push({ $unwind: '$venta' });
+                pipelineVentas.push({ $match: {} });
                 const desechos = yield desechos_model_1.default.aggregate(pipelineDesechos);
                 const productos = yield venta_productos_model_1.default.aggregate(pipelineVentas);
                 // Consulta a base de datos
@@ -211,7 +222,8 @@ class Reportes {
                 let cantidadTotal = 0;
                 // Se calculan los totales
                 desechos.forEach(desecho => desechosTotal += desecho.cantidad);
-                productos.forEach(producto => cantidadTotal += producto.cantidad);
+                productos.forEach(producto => { if (producto.venta.forma_pago !== 'Anulacion balanza')
+                    cantidadTotal += producto.cantidad; });
                 response_1.respuesta.success(res, { desechosTotal, cantidadTotal });
             }
             catch (error) {

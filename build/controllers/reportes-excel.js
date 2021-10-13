@@ -24,14 +24,16 @@ class ReportesExcel {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const ventas = req.body.ventas;
-                const { totalVentas, montoTotalBalanza, montoTotalMercaderia, totalAdicionalCredito, totalDescuentos, totalOtrosIngresos, totalOtrosGastos } = req.body;
+                const { totalVentas, montoTotalBalanza, montoTotalAnulacionBalanza, montoTotalMercaderia, totalAdicionalCredito, totalDescuentos, totalOtrosIngresos, totalOtrosGastos } = req.body;
                 const workbook = new exceljs_1.default.Workbook();
                 const worksheet = workbook.addWorksheet('Don Hilario - Ventas');
                 worksheet.addRow(['Cantidad de ventas', ventas.length]);
-                worksheet.addRow(['Total balanza', montoTotalBalanza, '', 'Total en ventas', totalVentas]);
-                worksheet.addRow(['Total mercaderia', montoTotalMercaderia, '', 'Total otros ingresos', totalOtrosIngresos]);
-                worksheet.addRow(['Total adicional por credito', totalAdicionalCredito, '', 'Total otros gastos', totalOtrosGastos]);
-                worksheet.addRow(['Total descuentos por sistema', totalDescuentos, '', 'Total', (totalVentas + totalOtrosIngresos - totalOtrosGastos)]);
+                worksheet.addRow(['Total balanza con anulaciones', (montoTotalBalanza + montoTotalAnulacionBalanza), '', 'Total en ventas', totalVentas]);
+                worksheet.addRow(['Total anulación balanza', montoTotalAnulacionBalanza, '', 'Total otros ingresos', totalOtrosIngresos]);
+                worksheet.addRow(['Total balanza sin anulaciones', montoTotalBalanza, '', 'Total otros gastos', totalOtrosGastos]);
+                worksheet.addRow(['Total mercaderia', montoTotalMercaderia, '', 'Total', (totalVentas + totalOtrosIngresos - totalOtrosGastos)]);
+                worksheet.addRow(['Total adicional por credito', totalAdicionalCredito]);
+                worksheet.addRow(['Total descuentos por sistema', totalDescuentos]);
                 worksheet.addRow(['Total en ventas', totalVentas]);
                 worksheet.addRow(['']);
                 worksheet.addRow(['Fecha', 'Forma de pago', 'Monto total', 'Tipo de venta']);
